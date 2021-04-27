@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Home from "../views/Home.vue";
+// import Login from "../views/a.vue";
 
 const routes = [
   {
@@ -8,6 +9,12 @@ const routes = [
     component: Home,
   },
   {
+    path: "/login",
+    name: "Login",
+    component: ()=> import("../views/a.vue")
+    
+    },
+  {
     path: "/about",
     name: "About",
     // route level code-splitting
@@ -15,6 +22,11 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/About.vue"),
+  },
+  {
+    path: "/bb",
+    name: "About",
+    component: () => import( "../views/a.vue"),
   },
 ];
 
