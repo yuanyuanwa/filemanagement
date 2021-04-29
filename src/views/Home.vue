@@ -64,6 +64,7 @@
 // @ is an alias to /src
 // import HelloWorld from "@/components/HelloWorld.vue";
 import { reactive, toRefs, ref } from "vue";
+import axios from "axios";
 
 export default {
   name: "Home",
@@ -113,6 +114,24 @@ export default {
     const handleFinish = (values) => {
       console.log(values, formState);
       console.log(1);
+      axios({
+        url: 'https://baidu.com',
+        method: "get",
+      })
+        .then((response) => {
+          console.log(response);
+          // //response.data.message不为空就是true
+          // if (Number(response.data.code) === 200 && response.data.message) {
+          //   this.category = response.data.message;
+          //   console.log(1, this.category);
+          //   this.getCategorySubByCategoryID(this.category[0].ID);
+          // } else {
+          //   Toast("服务器错误，数据获取失败");
+          // }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     };
     const handleFinishFailed = (errors) => {
       console.log(errors);
@@ -138,8 +157,7 @@ export default {
 </script>
 <style scoped>
 .left-con{
-  margin-right: 150px;
-  
+  margin-right: 150px; 
 }
 
 .home{
