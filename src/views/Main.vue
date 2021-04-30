@@ -1,32 +1,35 @@
 <template>
     <div>
-        <a-layout>
+    <a-layout>
     <a-layout-header class="header">
-      <div class="logo" />
-      <a-menu
-        theme="dark"
-        mode="horizontal"
-        v-model:selectedKeys="selectedKeys1"
-        :style="{ lineHeight: '64px' }"
-      >
-        <a-menu-item key="1">nav 1</a-menu-item>
-        <a-menu-item key="2">nav 2</a-menu-item>
-        <a-menu-item key="3">nav 3</a-menu-item>
-      </a-menu>
+    </a-layout-header>
+     <a-layout-header class="header2">
+     <div class='title'>文件管理系统</div>
+
+      <a-input placeholder="搜索" v-model:value="userName" class='input' suffix="=">
+      <template #prefix>
+        <search-outlined type="user" />
+      </template>
+     
+    </a-input>
+    
     </a-layout-header>
     <a-layout>
-      <a-layout-sider width="200" style="background: #fff">
+      <a-layout-sider width="250" style="background: #fff">
         <a-menu
           mode="inline"
           v-model:selectedKeys="selectedKeys2"
           v-model:openKeys="openKeys"
-          :style="{ height: '100%', borderRight: 0 }"
+          :style="{ height: '100%', borderRight: 0 , margin:'10px,0px,0px,0px'}"
         >
+        <a-menu-item key="2">
+        <CalendarOutlined />
+        Navigation Two
+      </a-menu-item>
           <a-sub-menu key="sub1">
             <template #title>
               <span>
-                <user-outlined />
-                subnav 1
+                首页
               </span>
             </template>
             <a-menu-item key="1">option1</a-menu-item>
@@ -60,7 +63,7 @@
           </a-sub-menu>
         </a-menu>
       </a-layout-sider>
-      <a-layout style="padding: 0 24px 24px">
+      <a-layout style="padding: 0 24px 24px;height:100vh" >
         <a-breadcrumb style="margin: 16px 0">
           <a-breadcrumb-item>Home</a-breadcrumb-item>
           <a-breadcrumb-item>List</a-breadcrumb-item>
@@ -78,13 +81,13 @@
 </template>
 
 <script>
-    import { UserOutlined, LaptopOutlined, NotificationOutlined } from '@ant-design/icons-vue';
+    import { LaptopOutlined, NotificationOutlined,SearchOutlined } from '@ant-design/icons-vue';
 import { defineComponent, ref } from 'vue';
 export default defineComponent({
   components: {
-    UserOutlined,
     LaptopOutlined,
     NotificationOutlined,
+    SearchOutlined,
   },
   setup() {
     return {
@@ -92,6 +95,7 @@ export default defineComponent({
       selectedKeys2: ref(['1']),
       collapsed: ref(false),
       openKeys: ref(['sub1']),
+      userName:ref('')
     };
   },
 });
@@ -115,10 +119,34 @@ export default defineComponent({
   background: #fff;
 }
 
-.ant-layout-header{
-    background-color: white;
-}
 .ant-menu-dark{
     background-color: paleturquoise;
+}
+
+.header2{
+background:white;
+  width:100%;
+  position:absolute;
+  top:0px;
+  left:0px;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.05);
+  display:flex;
+  align-items:center;
+}
+.ant-layout-sider{
+  position:static;
+}
+.title{
+      font-family: '微软雅黑 Bold', '微软雅黑 Regular', '微软雅黑';
+    font-weight: 700;
+    font-style: normal;
+    font-size: 24px;
+    color: #464C5B;
+}
+.input{
+  width:540px;
+  height:31px;
+  margin-left:48px;
+  border-radius:20px;
 }
 </style>
