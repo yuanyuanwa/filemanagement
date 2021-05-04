@@ -9,90 +9,65 @@
       <a-input placeholder="搜索" v-model:value="userName" class='input' suffix="=">
       <template #prefix>
         <search-outlined type="user" />
-      </template>
-     
-    </a-input>
-    
+      </template>    
+    </a-input>    
     </a-layout-header>
+
     <a-layout>
       <a-layout-sider width="250" style="background: #fff">
         <a-menu
           mode="inline"
           v-model:selectedKeys="selectedKeys2"
           v-model:openKeys="openKeys"
-          :style="{ height: '100%', borderRight: 0 , margin:'10px,0px,0px,0px'}"
+          :style="{ height: '100%', borderRight: 0 ,textAlign:'left'}"
         >
-        <a-menu-item key="2">
-        <CalendarOutlined />
-        Navigation Two
+        <a-menu-item key="sub0">
+        <router-link to="/main/mymian"><span> 首页</span></router-link>
       </a-menu-item>
           <a-sub-menu key="sub1">
             <template #title>
               <span>
-                首页
+                我的空间
               </span>
             </template>
-            <a-menu-item key="1">option1</a-menu-item>
-            <a-menu-item key="2">option2</a-menu-item>
-            <a-menu-item key="3">option3</a-menu-item>
-            <a-menu-item key="4">option4</a-menu-item>
+            <a-menu-item key="1"><router-link to="/main/myfile">我的文档</router-link></a-menu-item>
+            <a-menu-item key="2">共享文档</a-menu-item>
+            <a-menu-item key="3">协作文档</a-menu-item>
+            <a-menu-item key="4">我的收藏</a-menu-item>
           </a-sub-menu>
-          <a-sub-menu key="sub2">
-            <template #title>
-              <span>
-                <laptop-outlined />
-                subnav 2
-              </span>
-            </template>
-            <a-menu-item key="5">option5</a-menu-item>
-            <a-menu-item key="6">option6</a-menu-item>
-            <a-menu-item key="7">option7</a-menu-item>
-            <a-menu-item key="8">option8</a-menu-item>
-          </a-sub-menu>
-          <a-sub-menu key="sub3">
-            <template #title>
-              <span>
-                <notification-outlined />
-                subnav 3
-              </span>
-            </template>
-            <a-menu-item key="9">option9</a-menu-item>
-            <a-menu-item key="10">option10</a-menu-item>
-            <a-menu-item key="11">option11</a-menu-item>
-            <a-menu-item key="12">option12</a-menu-item>
-          </a-sub-menu>
+          <a-menu-item key="sub2">
+        <span>圈子管理</span>
+      </a-menu-item>
+           <a-menu-item key="sub3">
+        <span>模版管理</span>
+      </a-menu-item>
+       <a-menu-item key="sub4">
+        <span>回收站</span>
+      </a-menu-item>
         </a-menu>
       </a-layout-sider>
-      <a-layout style="padding: 0 24px 24px;height:100vh" >
-        <a-breadcrumb style="margin: 16px 0">
-          <a-breadcrumb-item>Home</a-breadcrumb-item>
-          <a-breadcrumb-item>List</a-breadcrumb-item>
-          <a-breadcrumb-item>App</a-breadcrumb-item>
-        </a-breadcrumb>
-        <a-layout-content
-          :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
-        >
-          Content
-        </a-layout-content>
+
+
+      <a-layout style="height:100vh"  class="content">
+        <router-view></router-view>
       </a-layout>
+
     </a-layout>
+
   </a-layout>
     </div>
 </template>
 
 <script>
-    import { LaptopOutlined, NotificationOutlined,SearchOutlined } from '@ant-design/icons-vue';
+    import {SearchOutlined } from '@ant-design/icons-vue';
 import { defineComponent, ref } from 'vue';
 export default defineComponent({
   components: {
-    LaptopOutlined,
-    NotificationOutlined,
     SearchOutlined,
   },
   setup() {
     return {
-      selectedKeys1: ref(['2']),
-      selectedKeys2: ref(['1']),
+      selectedKeys2: ref(['sub0']),
       collapsed: ref(false),
       openKeys: ref(['sub1']),
       userName:ref('')
@@ -148,5 +123,30 @@ background:white;
   height:31px;
   margin-left:48px;
   border-radius:20px;
+}
+/deep/ .ant-layout-sider-children{
+  margin-top: 40px;
+  margin-left: 20px;
+  font-family: 'Arial Negreta', 'Arial Normal', 'Arial';
+    font-weight: 700;
+    font-style: normal;
+    font-size: 16px;
+}
+/deep/ .ant-menu-item{
+  margin-bottom: 30px;
+  font-family: 'Arial Negreta', 'Arial Normal', 'Arial';
+    font-weight: 700;
+    font-style: normal;
+    font-size: 16px;
+}
+/deep/ .ant-menu-submenu-title{
+  font-family: 'Arial Negreta', 'Arial Normal', 'Arial';
+    font-weight: 700;
+    font-style: normal;
+    font-size: 16px;
+}
+.content{
+  border-left: 1px solid #f0f2f5;
+  background-color: white;
 }
 </style>

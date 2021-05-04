@@ -1,0 +1,23 @@
+{
+  "id": "2526348",
+  "name": "filemanager",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "8289033",
+      "name": "星星",
+      "font_class": "xingxing",
+      "unicode": "e870",
+      "unicode_decimal": 59504
+    },
+    {
+      "icon_id": "10715456",
+      "name": "星星",
+      "font_class": "xingxing1",
+      "unicode": "e639",
+      "unicode_decimal": 58937
+    }
+  ]
+}

@@ -8,21 +8,40 @@ const routes = [
     path: "/",
     name: "login",
     component: login,
+    
   },
   {
     path: "/main",
     name: "main",
-    component: ()=> import("../views/Main.vue")
+    component: ()=> import("../views/Main.vue"),
+    children: [
+      {
+        // 当 /user/:id/profile 匹配成功，
+        // UserProfile 会被渲染在 User 的 <router-view> 中
+        path: 'mymian',
+        component: ()=> import("../components/myMian.vue"),
+      },
+      {
+        // 当 /user/:id/profile 匹配成功，
+        // UserProfile 会被渲染在 User 的 <router-view> 中
+        path: 'myfile',
+        component: ()=> import("../components/myFile.vue"),
+      },
+      {
+        // 当 /user/:id/profile 匹配成功，
+        // UserProfile 会被渲染在 User 的 <router-view> 中
+        path: 'mymian',
+        component: ()=> import("../components/myMian.vue"),
+      }
+    ]
+    
     
     },
   {
     path: "/about",
     name: "About",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
     component: () =>
-      import(/* webpackChunkName: "about" */ "../views/About.vue"),
+      import("../views/About.vue"),
   },
   {
     path: "/bb",
