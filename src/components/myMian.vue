@@ -145,68 +145,32 @@
                     ok-text="确认"
                     cancel-text="取消"
                   >
-                    <div class="tag-con">
-                      <div class="tag-con-left">
-                        <a-checkbox-group v-model:value="value">
-                          <div class="tag-container">所有标签</div>
-                          <a-row>
-                            <div class="tag-container">
-                              <a-col :span="8">
-                                <a-checkbox value="A">A</a-checkbox>
-                              </a-col>
-                            </div>
-                            <div class="tag-container">
-                              <a-col :span="8">
-                                <a-checkbox value="B">B</a-checkbox>
-                              </a-col>
-                            </div>
-
-                            <div class="tag-container">
-                              <a-col :span="8">
-                                <a-checkbox value="C">C</a-checkbox>
-                              </a-col>
-                            </div>
-                            <div class="tag-container">
-                              <a-col :span="8">
-                                <a-checkbox value="D">D</a-checkbox>
-                              </a-col>
-                            </div>
-                            <div class="tag-container">
-                              <a-col :span="8">
-                                <a-checkbox value="E">E</a-checkbox>
-                              </a-col>
-                            </div>
-                            <div class="tag-container">
-                              <a-col :span="8">
-                                <a-checkbox value="F">F</a-checkbox>
-                              </a-col>
-                            </div>
-
-                            <div class="tag-container">
-                              <a-col :span="8">
-                                <a-checkbox class="checkbox">
-                                  <a-input
-                                    v-model:value="value1"
-                                    placeholder="自定义标签"
-                                    class="ownTag"
-                                /></a-checkbox>
-                              </a-col>
-                            </div>
-                          </a-row>
-                        </a-checkbox-group>
-                      </div>
-                      <div class="tag-con-left">
-                        <div class="tag-container">已添加标签</div>
-                        <div
-                          class="tag-container"
-                          v-for="(item, index) in list"
-                          :key="index"
-                        >
-                          <svg class="icon" aria-hidden="true">
-                            <use xlink:href="#icon-biaoqian1"></use></svg
-                          >{{ item.tag }}
-                        </div>
-                      </div>
+                    <div class="tag">
+                      <template v-for="(tag, index) in tags" :key="index">
+    <a-tooltip v-if="tag.length > 20" :title="tag">
+      <a-tag :key="tag" :closable="index !== 0" @close="handleClose(tag)">
+        {{ `${tag.slice(0, 20)}...` }}
+      </a-tag>
+    </a-tooltip>
+    <a-tag v-else :closable="index !== 0" @close="handleClose(tag)">
+      {{ tag }}
+    </a-tag>
+  </template>
+  <a-input
+    v-if="inputVisible"
+    ref="inputRef"
+    type="text"
+    size="small"
+    :style="{ width: '78px' }"
+    v-model:value="inputValue"
+    @blur="handleInputConfirm"
+    @keyup.enter="handleInputConfirm"
+  />
+  <a-tag v-else @click="showInput" style="background: #fff; border-style: dashed">
+    <plus-outlined />
+    New Tag
+  </a-tag>
+                      
                     </div>
                   </a-modal>
                 </a-menu-item>
@@ -241,26 +205,26 @@
                   </a>
                 </a-menu-item>
                 <a-menu-item key="6">
-                  <a rel="noopener noreferrer" @click="showModal1">
-                    <a-modal
-                      v-model:visible="visible"
-                      title="分享文档"
-                      @ok="handleOk"
-                      ok-text="确认"
-                      cancel-text="取消"
-                    >
-                      <p>Some contents...</p>
-                      <p>Some contents...</p>
-                      <p>Some contents...</p>
-                      <p>Some contents...</p>
-                      <p>Some contents...</p>
-                      <p>Some contents...</p>
-                      <p>Some contents...</p>
-                      <p>Some contents...</p>
-                    </a-modal>
+                  <a rel="noopener noreferrer" @click="showModal2">
                     <i class="icon iconfont icon-yingyong"></i>
                     应用
                   </a>
+                  <a-modal
+                    v-model:visible="visible2"
+                    title="应用"
+                    @ok="handleOk"
+                    ok-text="确认"
+                    cancel-text="取消"
+                  >
+                    <p>Some contents...</p>
+                    <p>Some contents...</p>
+                    <p>Some contents...</p>
+                    <p>Some contents...</p>
+                    <p>Some contents...</p>
+                    <p>Some contents...</p>
+                    <p>Some contents...</p>
+                    <p>Some contents...</p>
+                  </a-modal>
                 </a-menu-item>
                 <a-menu-item key="7">
                   <a
@@ -282,8 +246,6 @@
                     删除
                   </a>
                 </a-menu-item>
-                <!-- <a-menu-divider /> -->
-                <!-- <a-menu-item key="3" disabled>3rd menu item（disabled）</a-menu-item> -->
               </a-menu>
             </template>
           </a-dropdown>
@@ -296,18 +258,51 @@
 
 <script>
 import { FileOutlined } from "@ant-design/icons-vue";
+import { PlusOutlined } from '@ant-design/icons-vue';
 import { defineComponent, ref, computed, reactive, toRefs } from "vue";
 // import { ColumnProps } from 'ant-design-vue/es/table/interface';
 
 export default defineComponent({
   components: {
     FileOutlined,
+    PlusOutlined
   },
   setup() {
+    const inputRef = ref();
+    const handleClose = (removedTag) => {
+      const tags = state.tags.filter(tag => tag !== removedTag);
+      console.log(tags);
+      state.tags = tags;
+    };
+
+    // const showInput = () => {
+    //   state.inputVisible = true;
+    //   nextTick(() => {
+    //     inputRef.value.focus();
+    //   });
+    // };
+
+    const handleInputConfirm = () => {
+      const inputValue = state.inputValue;
+      let tags = state.tags;
+      if (inputValue && tags.indexOf(inputValue) === -1) {
+        tags = [...tags, inputValue];
+      }
+      console.log(tags);
+      Object.assign(state, {
+        tags,
+        inputVisible: false,
+        inputValue: '',
+      });
+    };
+    
     //对话框是否展示，默认不展示
     const visible = ref(false);
     const visible1 = ref(false);
-
+    const visible2 = ref(false);
+    const creatTag=()=>{
+      console.log(111);
+    }
     const columns = [
       {
         dataIndex: "name",
@@ -447,6 +442,9 @@ export default defineComponent({
     const showModal1 = () => {
       visible1.value = true;
     };
+    const showModal2 = () => {
+      visible2.value = true;
+    };
     const handleClickScope = (scope) => {
       console.log(1111, scope);
     };
@@ -457,6 +455,10 @@ export default defineComponent({
     const handleOk1 = (e) => {
       console.log(e);
       visible1.value = false;
+    };
+    const handleOk2 = (e) => {
+      console.log(e);
+      visible2.value = false;
     };
     const handleStarChange = (key) => {
       console.log(2, key);
@@ -471,6 +473,9 @@ export default defineComponent({
       selectedRowKeys: [], // Check here to configure the default column
       loading: false,
       value1: "",
+      tags: ['Unremovable', 'Tag 2', 'Tag 3Tag 3Tag 3Tag 3Tag 3Tag 3Tag 3'],
+      inputVisible: false,
+      inputValue: '',
     });
 
     const hasSelected = computed(() => state.selectedRowKeys.length > 0);
@@ -491,10 +496,13 @@ export default defineComponent({
       size: ref("large"),
       visible,
       visible1,
+      visible2,
       showModal,
       showModal1,
+      showModal2,
       handleOk,
       handleOk1,
+      handleOk2,
       data,
       columns,
       hasSelected,
@@ -507,6 +515,11 @@ export default defineComponent({
       detail,
       value: ref([]),
       list,
+      creatTag,
+      handleClose,
+     
+      handleInputConfirm,
+      inputRef,
     };
   },
 });
@@ -590,5 +603,13 @@ export default defineComponent({
 }
 .ant-modal-body {
   padding: 0px;
+}
+.tag{
+  margin: 20px;
+
+}
+.ant-tag {
+  border-radius: 15px;
+  margin: 10px;
 }
 </style>
