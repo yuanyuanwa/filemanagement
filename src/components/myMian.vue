@@ -105,7 +105,7 @@
         </template>
 
         //操作
-        <template #actions>
+        <template #actions="{ record }">
           <!-- <span>
             {{ record.action }}
           </span> -->
@@ -134,7 +134,7 @@
                   </a>
                 </a-menu-item>
                 <a-menu-item key="2">
-                  <a rel="noopener noreferrer" @click="showModal1">
+                  <a rel="noopener noreferrer" @click="showModal1(record)">
                     <i class="icon iconfont icon-tianjiabiaoqian"></i>
                     添加标签
                   </a>
@@ -146,31 +146,48 @@
                     cancel-text="取消"
                   >
                     <div class="tag">
-                      <template v-for="(tag, index) in tags" :key="index">
-    <a-tooltip v-if="tag.length > 20" :title="tag">
-      <a-tag :key="tag" :closable="index !== 0" @close="handleClose(tag)">
-        {{ `${tag.slice(0, 20)}...` }}
-      </a-tag>
-    </a-tooltip>
-    <a-tag v-else :closable="index !== 0" @close="handleClose(tag)">
-      {{ tag }}
-    </a-tag>
-  </template>
-  <a-input
-    v-if="inputVisible"
-    ref="inputRef"
-    type="text"
-    size="small"
-    :style="{ width: '78px' }"
-    v-model:value="inputValue"
-    @blur="handleInputConfirm"
-    @keyup.enter="handleInputConfirm"
-  />
-  <a-tag v-else @click="showInput" style="background: #fff; border-style: dashed">
-    <plus-outlined />
-    New Tag
-  </a-tag>
-                      
+                      <span v-for="(tag, index) in tags" :key="index">
+                        <a-tooltip v-if="tag.name.length > 20" :title="tag">
+                          <a-tag
+                            :key="tag.key"
+                            :closable="index !== 0"
+                            @close="handleClose(tag)"
+                            @click="handleTagClick(tag)"
+                            :color="tag.isClick ? 'cyan' : ''"
+                          >
+                            {{ `${tag.name.slice(0, 20)}...` }}
+                          </a-tag>
+                        </a-tooltip>
+                        <a-tag
+                          v-else
+                          :key="tag.key"
+                          :closable="index > 3"
+                          @close="handleClose(tag)"
+                          @click="handleTagClick(tag)"
+                          :color="tag.isClick ? 'cyan' : ''"
+                        >
+                          {{ tag.name }}
+                        </a-tag>
+                      </span>
+                      <a-input
+                        v-if="inputVisible"
+                        ref="inputRef"
+                        type="text"
+                        size="small"
+                        :style="{ width: '78px' }"
+                        v-model:value="inputValue"
+                        @blur="handleInputConfirm"
+                        @keyup.enter="handleInputConfirm"
+                      />
+                      <a-tag
+                        v-else
+                        @click="showInput"
+                        style="background: #fff; border-style: dashed"
+                        color="pink"
+                      >
+                        <plus-outlined />
+                        自定义标签
+                      </a-tag>
                     </div>
                   </a-modal>
                 </a-menu-item>
@@ -258,51 +275,104 @@
 
 <script>
 import { FileOutlined } from "@ant-design/icons-vue";
-import { PlusOutlined } from '@ant-design/icons-vue';
-import { defineComponent, ref, computed, reactive, toRefs } from "vue";
+import { PlusOutlined } from "@ant-design/icons-vue";
+import {
+  defineComponent,
+  ref,
+  computed,
+  reactive,
+  toRefs,
+  nextTick,
+} from "vue";
 // import { ColumnProps } from 'ant-design-vue/es/table/interface';
 
 export default defineComponent({
   components: {
     FileOutlined,
-    PlusOutlined
+    PlusOutlined,
   },
   setup() {
+    //定义变量
+    const state = reactive({
+      selectedRowKeys: [], // Check here to configure the default column
+      loading: false,
+      value1: "",
+      // tags: ["标签一", "标签二", "标签三", "标签四"],
+      tags: [
+        { key: 1, name: "机密", isClick: false },
+        { key: 2, name: "个人", isClick: false },
+        { key: 3, name: "工作", isClick: false },
+        { key: 4, name: "加油", isClick: false },
+      ],
+
+      inputVisible: false,
+      inputValue: "",
+    });
+
     const inputRef = ref();
     const handleClose = (removedTag) => {
-      const tags = state.tags.filter(tag => tag !== removedTag);
+      console.log(1, removedTag);
+      const tags = state.tags.filter((tag) => tag !== removedTag);
       console.log(tags);
       state.tags = tags;
+      console.log(33, state.tags);
     };
 
-    // const showInput = () => {
-    //   state.inputVisible = true;
-    //   nextTick(() => {
-    //     inputRef.value.focus();
-    //   });
-    // };
+    const showInput = () => {
+      state.inputVisible = true;
+      nextTick(() => {
+        inputRef.value.focus();
+      });
+    };
+    const handleTagClick = (tag) => {
+      console.log(tag);
 
+      let tags = state.tags;
+      tags.map((item) => {
+        if (item.name === tag.name) {
+          item.isClick = !tag.isClick;
+        }
+      });
+    };
     const handleInputConfirm = () => {
       const inputValue = state.inputValue;
+      if (!inputValue) return;
+      let obj = {
+        key: state.tags.length + 1,
+        name: inputValue,
+        isClick: false,
+      };
       let tags = state.tags;
-      if (inputValue && tags.indexOf(inputValue) === -1) {
-        tags = [...tags, inputValue];
+
+      let isFind = false;
+      tags.map((item) => {
+        if (inputValue && inputValue === item.name) {
+          isFind = true;
+        }
+      });
+      if (!isFind) {
+        tags = [...tags, obj];
       }
+
+      // if (inputValue && tags.indexOf(inputValue) === -1) {
+      //   tags = [...tags, inputValue];
+      // }
+
       console.log(tags);
       Object.assign(state, {
         tags,
         inputVisible: false,
-        inputValue: '',
+        inputValue: "",
       });
     };
-    
+
     //对话框是否展示，默认不展示
     const visible = ref(false);
     const visible1 = ref(false);
     const visible2 = ref(false);
-    const creatTag=()=>{
+    const creatTag = () => {
       console.log(111);
-    }
+    };
     const columns = [
       {
         dataIndex: "name",
@@ -439,7 +509,16 @@ export default defineComponent({
     const showModal = () => {
       visible.value = true;
     };
-    const showModal1 = () => {
+    let selectTag = {};
+    const showModal1 = (record) => {
+      console.log(record);
+      state.tags = [
+        { key: 1, name: "机密", isClick: false },
+        { key: 2, name: "个人", isClick: false },
+        { key: 3, name: "工作", isClick: false },
+        { key: 4, name: "加油", isClick: false },
+      ];
+      selectTag = record;
       visible1.value = true;
     };
     const showModal2 = () => {
@@ -449,11 +528,22 @@ export default defineComponent({
       console.log(1111, scope);
     };
     const handleOk = (e) => {
-      console.log(e);
+      console.log(1, e);
       visible.value = false;
     };
     const handleOk1 = (e) => {
       console.log(e);
+
+      selectTag.tags = state.tags
+        .filter((v) => v.isClick)
+        .map((item) => {
+          return {
+            key: item.name,
+            color: item.isClick ? "cyan" : "",
+          };
+        });
+      console.log("selectTag.tags", selectTag.tags);
+
       visible1.value = false;
     };
     const handleOk2 = (e) => {
@@ -468,15 +558,6 @@ export default defineComponent({
     const detail = () => {
       console.log(1111);
     };
-    //定义变量
-    const state = reactive({
-      selectedRowKeys: [], // Check here to configure the default column
-      loading: false,
-      value1: "",
-      tags: ['Unremovable', 'Tag 2', 'Tag 3Tag 3Tag 3Tag 3Tag 3Tag 3Tag 3'],
-      inputVisible: false,
-      inputValue: '',
-    });
 
     const hasSelected = computed(() => state.selectedRowKeys.length > 0);
 
@@ -517,8 +598,9 @@ export default defineComponent({
       list,
       creatTag,
       handleClose,
-     
+      showInput,
       handleInputConfirm,
+      handleTagClick,
       inputRef,
     };
   },
@@ -604,9 +686,8 @@ export default defineComponent({
 .ant-modal-body {
   padding: 0px;
 }
-.tag{
+.tag {
   margin: 20px;
-
 }
 .ant-tag {
   border-radius: 15px;
