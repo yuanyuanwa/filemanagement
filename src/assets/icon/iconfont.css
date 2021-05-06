@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 2526348 */
-  src: url('iconfont.woff2?t=1620125284590') format('woff2'),
-       url('iconfont.woff?t=1620125284590') format('woff'),
-       url('iconfont.ttf?t=1620125284590') format('truetype');
+  src: url('iconfont.woff2?t=1620287406546') format('woff2'),
+       url('iconfont.woff?t=1620287406546') format('woff'),
+       url('iconfont.ttf?t=1620287406546') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,58 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-biaoqian1:before {
+  content: "\e630";
+}
+
+.icon-biaoqian:before {
+  content: "\e62d";
+}
+
+.icon-0-57:before {
+  content: "\e608";
+}
+
+.icon-xiazai:before {
+  content: "\e75d";
+}
+
+.icon-delete:before {
+  content: "\e63e";
+}
+
+.icon-shoucang:before {
+  content: "\e600";
+}
+
+.icon-yingyong:before {
+  content: "\e838";
+}
+
+.icon-fenxiang1:before {
+  content: "\e601";
+}
+
+.icon-icon-quanju-baocuncundang:before {
+  content: "\e63f";
+}
+
+.icon-tianjiabiaoqian:before {
+  content: "\e893";
+}
+
+.icon-xiezuo_huaban1:before {
+  content: "\e813";
+}
+
+.icon-zhongmingming:before {
+  content: "\e6a3";
+}
+
+.icon-xiaoxi:before {
+  content: "\e618";
 }
 
 .icon-xingxing:before {

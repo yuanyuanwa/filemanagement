@@ -6,6 +6,97 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "7997104",
+      "name": "标签",
+      "font_class": "biaoqian1",
+      "unicode": "e630",
+      "unicode_decimal": 58928
+    },
+    {
+      "icon_id": "8883694",
+      "name": "标签",
+      "font_class": "biaoqian",
+      "unicode": "e62d",
+      "unicode_decimal": 58925
+    },
+    {
+      "icon_id": "18517171",
+      "name": "标签",
+      "font_class": "0-57",
+      "unicode": "e608",
+      "unicode_decimal": 58888
+    },
+    {
+      "icon_id": "996848",
+      "name": "下载",
+      "font_class": "xiazai",
+      "unicode": "e75d",
+      "unicode_decimal": 59229
+    },
+    {
+      "icon_id": "2425927",
+      "name": "垃圾桶",
+      "font_class": "delete",
+      "unicode": "e63e",
+      "unicode_decimal": 58942
+    },
+    {
+      "icon_id": "5767691",
+      "name": "收 藏 ",
+      "font_class": "shoucang",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "16778979",
+      "name": "应用",
+      "font_class": "yingyong",
+      "unicode": "e838",
+      "unicode_decimal": 59448
+    },
+    {
+      "icon_id": "17018163",
+      "name": "分 享 (1)",
+      "font_class": "fenxiang1",
+      "unicode": "e601",
+      "unicode_decimal": 58881
+    },
+    {
+      "icon_id": "18615662",
+      "name": "icon-全局-保存&存档",
+      "font_class": "icon-quanju-baocuncundang",
+      "unicode": "e63f",
+      "unicode_decimal": 58943
+    },
+    {
+      "icon_id": "18965442",
+      "name": "添加标签",
+      "font_class": "tianjiabiaoqian",
+      "unicode": "e893",
+      "unicode_decimal": 59539
+    },
+    {
+      "icon_id": "19670632",
+      "name": "协作",
+      "font_class": "xiezuo_huaban1",
+      "unicode": "e813",
+      "unicode_decimal": 59411
+    },
+    {
+      "icon_id": "19887170",
+      "name": "重命名",
+      "font_class": "zhongmingming",
+      "unicode": "e6a3",
+      "unicode_decimal": 59043
+    },
+    {
+      "icon_id": "20536344",
+      "name": "消 息",
+      "font_class": "xiaoxi",
+      "unicode": "e618",
+      "unicode_decimal": 58904
+    },
+    {
       "icon_id": "8289033",
       "name": "星星",
       "font_class": "xingxing",

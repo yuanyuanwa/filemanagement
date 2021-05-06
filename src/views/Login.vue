@@ -178,7 +178,6 @@ export default {
   height: 310px;
   width: 340px;
   /* background-color: palegreen; */
-
 }
 .title-con{
   display: flex;
