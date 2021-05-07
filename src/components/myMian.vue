@@ -5,21 +5,27 @@
         <div class="recently">最近访问</div>
         <div>
           <a-dropdown>
-            <a-button @click.prevent type="primary" class="upload"> 上传</a-button>
+            <a-button @click.prevent type="primary" class="upload">
+              上传</a-button
+            >
             <template #overlay>
               <a-menu>
                 <a-menu-item>
-                  <a-upload action="https://www.mocky.io/v2/5cc8019d300000980a055e76">
-                  <a href="javascript:;">上传文件</a>
-                </a-upload>
-                </a-menu-item>
-                
-                <a-menu-item>
-                  <a-upload action="https://www.mocky.io/v2/5cc8019d300000980a055e76" directory>
-                  <a href="javascript:;">上传文件夹</a>
-                </a-upload>
+                  <a-upload
+                    action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                  >
+                    <a href="javascript:;">上传文件</a>
+                  </a-upload>
                 </a-menu-item>
 
+                <a-menu-item>
+                  <a-upload
+                    action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                    directory
+                  >
+                    <a href="javascript:;">上传文件夹</a>
+                  </a-upload>
+                </a-menu-item>
               </a-menu>
             </template>
           </a-dropdown>
@@ -39,36 +45,44 @@
         </div>
       </div>
       <div class="list">
-      <div>
-      <a-radio-group v-model:value="size" class="button">
-        <a-radio-button value="large" @click="showModal">分享</a-radio-button>
-        <a-modal
-          v-model:visible="visible"
-          title="分享文档"
-          @ok="handleOk"
-          ok-text="确认"
-          cancel-text="取消"
-        >
-          <p>Some contents...</p>
-          <p>Some contents...</p>
-          <p>Some contents...</p>
-          <p>Some contents...</p>
-          <p>Some contents...</p>
-          <p>Some contents...</p>
-          <p>Some contents...</p>
-          <p>Some contents...</p>
-        </a-modal>
-        <a-radio-button value="large">收藏</a-radio-button>
-        <a-radio-button value="large">下载</a-radio-button>
-        <a-radio-button value="large">移动到</a-radio-button>
-        <a-radio-button value="large" @click="showModal">删除</a-radio-button>
-      </a-radio-group>
+        <div>
+          <a-radio-group v-model:value="size" class="button">
+            <a-radio-button value="large" @click="showModal"
+              >分享</a-radio-button
+            >
+            <a-modal
+              v-model:visible="visible"
+              title="分享文档"
+              @ok="handleOk"
+              ok-text="确认"
+              cancel-text="取消"
+            >
+              <p>Some contents...</p>
+              <p>Some contents...</p>
+              <p>Some contents...</p>
+              <p>Some contents...</p>
+              <p>Some contents...</p>
+              <p>Some contents...</p>
+              <p>Some contents...</p>
+              <p>Some contents...</p>
+            </a-modal>
+            <a-radio-button value="large">收藏</a-radio-button>
+            <a-radio-button value="large">下载</a-radio-button>
+            <a-radio-button value="large">移动到</a-radio-button>
+            <a-radio-button value="large" @click="showModal"
+              >删除</a-radio-button
+            >
+          </a-radio-group>
+        </div>
+        <div>
+          <div v-if="changeList">
+            <i class="icon iconfont icon-liebiaoqiehuan-1 changeList"></i>
+          </div>
+          <div v-else>
+            <i class="icon iconfont icon-liebiaoqiehuan- changeList"></i>
+          </div>
+        </div>
       </div>
-      <div>
-        <div v-if="changeList"><i class="icon iconfont icon-liebiaoqiehuan-1 changeList"></i></div>
-      <div v-else><i class="icon iconfont icon-liebiaoqiehuan- changeList" ></i></div>
-      </div>
-    </div>
     </div>
 
     <div class="content">
@@ -89,13 +103,15 @@
             <div style="word-break: break-all; width: 300px">
               <FileOutlined />
               <span @click="handleClickScope(scope)">{{ scope.text }}</span>
-              <a-tag
-                v-for="tag in scope.record.tags"
-                :key="tag"
-                :color="tag.color"
-              >
-                {{ tag.key }}
-              </a-tag>
+              <span v-for="tag in scope.record.tags" :key="tag">
+                <a-tag
+                  v-if="tag.isClick || tag.isSystemTag"
+                  :key="tag"
+                  :color="tag.color"
+                >
+                  {{ tag.key }}
+                </a-tag>
+              </span>
             </div>
             <div @click="handleStarChange(scope.record.key)">
               <div v-if="scope.record.icon">
@@ -190,7 +206,7 @@
                       <div class="system-tag">
                         <div>系统标签：</div>
                         <div>
-                          <span v-for="(tag, index) in tags1" :key="index">
+                          <span v-for="(tag, index) in systemTags" :key="index">
                             <a-tag
                               :key="tag.key"
                               :closable="false"
@@ -342,19 +358,21 @@ export default defineComponent({
       selectedRowKeys: [], // Check here to configure the default column
       loading: false,
       value1: "",
-      tags: [
-        { key: 1, name: "机密", isClick: false },
-        { key: 2, name: "个人", isClick: false },
-        { key: 3, name: "工作", isClick: false },
-        { key: 4, name: "加油", isClick: false },
-      ],
-      tags1: [
-        { key: 1, name: "科学城", isClick: false },
-        { key: 2, name: "科学城1", isClick: false },
-        { key: 3, name: "科学城2", isClick: false },
-        { key: 4, name: "科学城3", isClick: false },
-      ],
-      totalTag: [], //
+      // tags: [
+      //   { key: 1, name: "机密", isClick: false },
+      //   { key: 2, name: "个人", isClick: false },
+      //   { key: 3, name: "工作", isClick: false },
+      //   { key: 4, name: "加油", isClick: false },
+      // ],
+      tags: [],
+      // systemTags: [
+      //   { key: 1, name: "科学城", isClick: false },
+      //   { key: 2, name: "科学城1", isClick: false },
+      //   { key: 3, name: "科学城2", isClick: false },
+      //   { key: 4, name: "科学城3", isClick: false },
+      // ],
+      systemTags: [],
+      // totalTag: [], //
       inputVisible: false,
       inputValue: "",
       applications: [
@@ -363,7 +381,7 @@ export default defineComponent({
         { key: 3, name: "查看图片", url: "https://baidu.com" },
         { key: 4, name: "XXX部门大屏展示", url: "https://baidu.com" },
       ],
-      changeList:true
+      changeList: true,
     });
 
     const inputRef = ref();
@@ -388,12 +406,12 @@ export default defineComponent({
     //系统标签选中和不选中
     const handleTagClick1 = (tag) => {
       console.log(tag);
-      let tags = state.tags1;
-      tags.map((item) => {
-        if (item.name === tag.name) {
-          item.isClick = !tag.isClick;
-        }
-      });
+      // let tags = state.systemTags;
+      // tags.map((item) => {
+      //   if (item.name === tag.name) {
+      //     item.isClick = !tag.isClick;
+      //   }
+      // });
     };
     //自定义标签选中和不选中
     const handleTagClick = (tag) => {
@@ -404,6 +422,7 @@ export default defineComponent({
           item.isClick = !tag.isClick;
         }
       });
+      console.log("tag", tag);
     };
     //确认时不重复输入
     const handleInputConfirm = () => {
@@ -413,6 +432,7 @@ export default defineComponent({
         key: state.tags.length + 1,
         name: inputValue,
         isClick: false,
+        isSystemTag: false,
       };
       let tags = state.tags;
       let isFind = false;
@@ -430,6 +450,7 @@ export default defineComponent({
         inputVisible: false,
         inputValue: "",
       });
+      console.log(55, state.tags);
     };
 
     //对话框是否展示，默认不展示
@@ -488,14 +509,31 @@ export default defineComponent({
         size: "18KB",
         isFiled: "已归档",
         seeTime: "2020-05-07",
+        _id: "A12jkasf",
         tags: [
           {
-            key: "机密",
-            color: "red",
+            key: "科学城",
+            color: "orange",
+            isSystemTag: true,
+            isClick: true,
           },
           {
-            key: "重要",
-            color: "blue",
+            key: "科学城1",
+            color: "orange",
+            isSystemTag: true,
+            isClick: true,
+          },
+          {
+            key: "工程文件",
+            color: "orange",
+            isSystemTag: false,
+            isClick: true,
+          },
+          {
+            key: "项目文件2",
+            color: "orange",
+            isSystemTag: false,
+            isClick: false,
           },
         ],
         action: "...",
@@ -509,76 +547,92 @@ export default defineComponent({
         isFiled: "未归档",
         size: "18KB",
         seeTime: "2020-05-07",
+        _id: "NBerfghia2sf",
+
         tags: [
           {
-            key: "机密",
-            color: "red",
+            key: "文档1",
+            color: "orange",
+            isSystemTag: true,
           },
           {
-            key: "重要",
-            color: "blue",
+            key: "图片2",
+            color: "orange",
+            isSystemTag: true,
+          },
+          {
+            key: "工程文件",
+            color: "orange",
+            isSystemTag: false,
+            isClick: true,
+          },
+          {
+            key: "项目文件2",
+            color: "orange",
+            isSystemTag: false,
+            isClick: false,
           },
         ],
         action: "...",
         icon: true,
       },
-      {
-        key: "2",
-        name: "Joe Black",
-        age: 32,
-        isFiled: "未归档",
-        size: "18KB",
-        seeTime: "2020-05-07",
-        tags: [
-          {
-            key: "机密",
-            color: "red",
-          },
-          {
-            key: "重要",
-            color: "blue",
-          },
-        ],
-        action: "...",
-      },
-      {
-        key: "3",
-        name: "Joe Black",
-        isFiled: "未归档",
-        size: "18KB",
-        age: 32,
-        seeTime: "2020-05-07",
-        tags: [
-          {
-            key: "机密",
-            color: "red",
-          },
-          {
-            key: "重要",
-            color: "blue",
-          },
-        ],
-        action: "...",
-      },
-      {
-        key: "4",
-        name: "Joe Black",
-        isFiled: "未归档",
-        size: "18KB",
-        age: 32,
-        seeTime: "2020-05-07",
-        tags: [
-          {
-            key: "机密",
-            color: "red",
-          },
-          {
-            key: "重要",
-            color: "blue",
-          },
-        ],
-        action: "...",
-      },
+      // {
+      //   key: "2",
+      //   name: "Joe Black",
+      //   age: 32,
+      //   isFiled: "未归档",
+      //   size: "18KB",
+      //   seeTime: "2020-05-07",
+      //   tags: [
+      //     {
+      //       key: "机密",
+      //       color: "red",
+      //     },
+      //     {
+      //       key: "重要",
+      //       color: "blue",
+      //     },
+      //   ],
+      //   action: "...",
+      // },
+      // {
+      //   key: "3",
+      //   name: "Joe Black",
+      //   isFiled: "未归档",
+      //   size: "18KB",
+      //   age: 32,
+      //   seeTime: "2020-05-07",
+      //   tags: [
+      //     {
+      //       key: "机密",
+      //       color: "red",
+      //     },
+      //     {
+      //       key: "重要",
+      //       color: "blue",
+      //     },
+      //   ],
+      //   action: "...",
+      // },
+      // {
+      //   key: "4",
+      //   name: "Joe Black",
+      //   isFiled: "未归档",
+      //   size: "18KB",
+      //   age: 32,
+      //   seeTime: "2020-05-07",
+      //   tags: [
+      //     {
+      //       key: "机密",
+      //       color: "red",
+      //     },
+      //     {
+      //       key: "重要",
+      //       color: "blue",
+      //     },
+      //   ],
+      //   action: "...",
+      // },
     ]);
     const list = [
       { tag: "标签一" },
@@ -591,8 +645,38 @@ export default defineComponent({
       visible.value = true;
     };
     let selectTag = {};
+    let selectID = "";
     const showModal1 = (record) => {
       console.log(record);
+      selectID = record._id;
+      // 这是系统标签
+      state.systemTags = record.tags
+        .filter((v) => v.isSystemTag)
+        .map((item, index) => {
+          return {
+            key: index,
+            name: item.key,
+            isClick: true,
+            isSystemTag: item.isSystemTag,
+          };
+        });
+      // 自定义标签
+      state.tags = record.tags
+        .filter((v) => !v.isSystemTag)
+        .map((item, index) => {
+          return {
+            key: index,
+            name: item.key,
+            isClick: item.isClick,
+            isSystemTag: item.isSystemTag,
+          };
+        });
+      // if(item.isSystemTag) {
+      //   return true
+      // } else {
+      //   return false
+      // }
+      // 自定义标签
       // 清空状态
       // state.tags = [
       //   { key: 1, name: "机密", isClick: false },
@@ -625,23 +709,65 @@ export default defineComponent({
     };
     const handleOk1 = (e) => {
       console.log(3333, e);
-      //合并系统标签和自定义标签
-      state.totalTag = state.tags.concat(state.tags1);
-      console.log(55555, state.totalTag);
+      console.log(2, selectTag);
+      let all = state.tags.concat(state.systemTags);
+      console.log("all", all);
 
-      //选择标签
-      selectTag.tags = state.totalTag
-        .filter((v) => v.isClick)
-        .map((item) => {
-          return {
-            key: item.name,
-            //cyan:青绿色s
-            color: item.isClick ? "cyan" : "",
-          };
-        });
-      console.log("selectTag.tags", selectTag.tags);
+      console.log(223, data.value);
+
+      data.value = data.value.map((item) => {
+        if (item._id === selectID) {
+          item.tags = all.map((item) => {
+            return {
+              key: item.name,
+              color: "orange",
+              isSystemTag: item.isSystemTag,
+              isClick: item.isClick,
+            };
+          });
+        }
+        return item;
+      });
+      // selectTag = all.map((item) => {
+      //   return {
+      //     key: item.name,
+      //     color: "orange",
+      //     isSystemTag: item.isSystemTag,
+      //     isClick: item.isClick,
+      //   };
+      // });
+      console.log("selectTag", selectTag);
+
+      // //合并系统标签和自定义标签
+      // state.totalTag = state.tags.concat(state.systemTags);
+      // console.log(55555, state.totalTag);
+
+      // //选择标签
+      // selectTag.tags = state.totalTag
+      //   .filter((v) => v.isClick)
+      //   .map((item) => {
+      //     return {
+      //       key: item.name,
+      //       //cyan:青绿色s
+      //       color: item.isClick ? "cyan" : "",
+      //     };
+      //   });
+      // console.log("selectTag.tags", selectTag.tags);
 
       visible1.value = false;
+      // data.value = data.value.map((item) => {
+      //   if (item._id === selectID) {
+      //     item.tags = all.map((item) => {
+      //       return {
+      //         key: item.name,
+      //         color: "orange",
+      //         isSystemTag: item.isSystemTag,
+      //         isClick: item.isClick,
+      //       };
+      //     });
+      //   }
+      //   return item;
+      // });
     };
     const handleOk2 = (e) => {
       console.log(e);
@@ -704,7 +830,7 @@ export default defineComponent({
 });
 </script>
 
-<style scope>
+<style scoped>
 .checkbox {
   display: flex;
   align-items: center;
@@ -783,9 +909,7 @@ export default defineComponent({
 .ant-modal-body {
   padding: 0px;
 }
-.tag {
-  margin: 20px;
-}
+
 .ant-tag {
   border-radius: 15px;
   margin: 10px;
@@ -802,15 +926,14 @@ export default defineComponent({
   font-size: 25px;
   font-weight: 700;
 }
-.list{
+.list {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
-.icon-liebiaoqiehuan-1,.icon-liebiaoqiehuan-{
+.icon-liebiaoqiehuan-1,
+.icon-liebiaoqiehuan- {
   font-size: 25px;
 }
-/* .icon{
-  font-size: 100px;
-} */
+
 </style>
