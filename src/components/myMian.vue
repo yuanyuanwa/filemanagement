@@ -146,20 +146,25 @@
                     cancel-text="取消"
                   >
                     <div class="tag">
+                      <div class="system-tag">
+                        <div>系统标签：</div>
+                        <div>
+                          <span v-for="(tag, index) in tags1" :key="index">
+                            <a-tag
+                              :key="tag.key"
+                              :closable="false"
+                              @close="handleClose(tag)"
+                              @click="handleTagClick1(tag)"
+                              :color="tag.isClick ? 'cyan' : ''"
+                            >
+                              {{ tag.name }}
+                            </a-tag>
+                          </span>
+                        </div>
+                      </div>
+                      <div class="">自定义标签：</div>
                       <span v-for="(tag, index) in tags" :key="index">
-                        <a-tooltip v-if="tag.name.length > 20" :title="tag">
-                          <a-tag
-                            :key="tag.key"
-                            :closable="index !== 0"
-                            @close="handleClose(tag)"
-                            @click="handleTagClick(tag)"
-                            :color="tag.isClick ? 'cyan' : ''"
-                          >
-                            {{ `${tag.name.slice(0, 20)}...` }}
-                          </a-tag>
-                        </a-tooltip>
                         <a-tag
-                          v-else
                           :key="tag.key"
                           :closable="index > 3"
                           @close="handleClose(tag)"
@@ -183,7 +188,7 @@
                         v-else
                         @click="showInput"
                         style="background: #fff; border-style: dashed"
-                        color="pink"
+                        color="blue"
                       >
                         <plus-outlined />
                         自定义标签
@@ -297,20 +302,28 @@ export default defineComponent({
       selectedRowKeys: [], // Check here to configure the default column
       loading: false,
       value1: "",
-      // tags: ["标签一", "标签二", "标签三", "标签四"],
       tags: [
         { key: 1, name: "机密", isClick: false },
         { key: 2, name: "个人", isClick: false },
         { key: 3, name: "工作", isClick: false },
         { key: 4, name: "加油", isClick: false },
       ],
-
+      tags1: [
+        { key: 1, name: "科学城", isClick: false },
+        { key: 2, name: "科学城1", isClick: false },
+        { key: 3, name: "科学城2", isClick: false },
+        { key: 4, name: "科学城3", isClick: false },
+      ],
+      totalTag: [], //
       inputVisible: false,
       inputValue: "",
     });
 
     const inputRef = ref();
+
+    //清除标签
     const handleClose = (removedTag) => {
+      //removedTag：要清除的标签
       console.log(1, removedTag);
       const tags = state.tags.filter((tag) => tag !== removedTag);
       console.log(tags);
@@ -324,9 +337,20 @@ export default defineComponent({
         inputRef.value.focus();
       });
     };
+
+    //系统标签选中和不选中
+    const handleTagClick1 = (tag) => {
+      console.log(tag);
+      let tags = state.tags1;
+      tags.map((item) => {
+        if (item.name === tag.name) {
+          item.isClick = !tag.isClick;
+        }
+      });
+    };
+    //自定义标签选中和不选中
     const handleTagClick = (tag) => {
       console.log(tag);
-
       let tags = state.tags;
       tags.map((item) => {
         if (item.name === tag.name) {
@@ -334,6 +358,7 @@ export default defineComponent({
         }
       });
     };
+    //确认时不重复输入
     const handleInputConfirm = () => {
       const inputValue = state.inputValue;
       if (!inputValue) return;
@@ -343,7 +368,6 @@ export default defineComponent({
         isClick: false,
       };
       let tags = state.tags;
-
       let isFind = false;
       tags.map((item) => {
         if (inputValue && inputValue === item.name) {
@@ -353,11 +377,6 @@ export default defineComponent({
       if (!isFind) {
         tags = [...tags, obj];
       }
-
-      // if (inputValue && tags.indexOf(inputValue) === -1) {
-      //   tags = [...tags, inputValue];
-      // }
-
       console.log(tags);
       Object.assign(state, {
         tags,
@@ -512,13 +531,15 @@ export default defineComponent({
     let selectTag = {};
     const showModal1 = (record) => {
       console.log(record);
-      state.tags = [
-        { key: 1, name: "机密", isClick: false },
-        { key: 2, name: "个人", isClick: false },
-        { key: 3, name: "工作", isClick: false },
-        { key: 4, name: "加油", isClick: false },
-      ];
+      // 清空状态
+      // state.tags = [
+      //   { key: 1, name: "机密", isClick: false },
+      //   { key: 2, name: "个人", isClick: false },
+      //   { key: 3, name: "工作", isClick: false },
+      //   { key: 4, name: "加油", isClick: false },
+      // ];
       selectTag = record;
+      console.log(selectTag);
       visible1.value = true;
     };
     const showModal2 = () => {
@@ -532,13 +553,18 @@ export default defineComponent({
       visible.value = false;
     };
     const handleOk1 = (e) => {
-      console.log(e);
+      console.log(3333, e);
+      //合并系统标签和自定义标签
+      state.totalTag = state.tags.concat(state.tags1);
+      console.log(55555,state.totalTag);
 
-      selectTag.tags = state.tags
+      //选择标签
+      selectTag.tags = state.totalTag
         .filter((v) => v.isClick)
         .map((item) => {
           return {
             key: item.name,
+            //cyan:青绿色
             color: item.isClick ? "cyan" : "",
           };
         });
@@ -552,7 +578,6 @@ export default defineComponent({
     };
     const handleStarChange = (key) => {
       console.log(2, key);
-
       data.value[key].icon = !data.value[key].icon;
     };
     const detail = () => {
@@ -602,6 +627,7 @@ export default defineComponent({
       handleInputConfirm,
       handleTagClick,
       inputRef,
+      handleTagClick1,
     };
   },
 });
@@ -692,5 +718,8 @@ export default defineComponent({
 .ant-tag {
   border-radius: 15px;
   margin: 10px;
+}
+.system-tag {
+  border-bottom: 1px solid #f0f2f5;
 }
 </style>
