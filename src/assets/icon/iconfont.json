@@ -6,6 +6,20 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "6827441",
+      "name": "列表切换01-01",
+      "font_class": "liebiaoqiehuan-",
+      "unicode": "e62a",
+      "unicode_decimal": 58922
+    },
+    {
+      "icon_id": "6827442",
+      "name": "列表切换02-01",
+      "font_class": "liebiaoqiehuan-1",
+      "unicode": "e62b",
+      "unicode_decimal": 58923
+    },
+    {
       "icon_id": "7997104",
       "name": "标签",
       "font_class": "biaoqian1",

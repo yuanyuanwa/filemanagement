@@ -4,11 +4,42 @@
       <div class="head-con">
         <div class="recently">最近访问</div>
         <div>
-          <a-button type="primary" class="upload">上传</a-button>
-          <a-button type="defalut">下载</a-button>
+          <a-dropdown>
+            <a-button @click.prevent type="primary" class="upload"> 上传</a-button>
+            <template #overlay>
+              <a-menu>
+                <a-menu-item>
+                  <a-upload action="https://www.mocky.io/v2/5cc8019d300000980a055e76">
+                  <a href="javascript:;">上传文件</a>
+                </a-upload>
+                </a-menu-item>
+                
+                <a-menu-item>
+                  <a-upload action="https://www.mocky.io/v2/5cc8019d300000980a055e76" directory>
+                  <a href="javascript:;">上传文件夹</a>
+                </a-upload>
+                </a-menu-item>
+
+              </a-menu>
+            </template>
+          </a-dropdown>
+          <a-dropdown>
+            <a-button @click.prevent type="defalut"> 下载 </a-button>
+            <template #overlay>
+              <a-menu>
+                <a-menu-item>
+                  <a href="javascript:;">新建文件</a>
+                </a-menu-item>
+                <a-menu-item>
+                  <a href="javascript:;">新建文件夹</a>
+                </a-menu-item>
+              </a-menu>
+            </template>
+          </a-dropdown>
         </div>
       </div>
-
+      <div class="list">
+      <div>
       <a-radio-group v-model:value="size" class="button">
         <a-radio-button value="large" @click="showModal">分享</a-radio-button>
         <a-modal
@@ -32,6 +63,12 @@
         <a-radio-button value="large">移动到</a-radio-button>
         <a-radio-button value="large" @click="showModal">删除</a-radio-button>
       </a-radio-group>
+      </div>
+      <div>
+        <div v-if="changeList"><i class="icon iconfont icon-liebiaoqiehuan-1 changeList"></i></div>
+      <div v-else><i class="icon iconfont icon-liebiaoqiehuan- changeList" ></i></div>
+      </div>
+    </div>
     </div>
 
     <div class="content">
@@ -79,38 +116,42 @@
         //大小
         <template #size="{ record }">
           <span>
-            {{ record.address }}
+            {{ record.size }}
           </span>
         </template>
 
         //状态
         <template #state="{ record }">
           <span>
-            {{ record.age }}
+            {{ record.isFiled }}
           </span>
         </template>
 
         //浏览次数
         <template #see="{ record }">
           <span>
-            <a>Invite 一 {{ record.age }}</a>
+            <a> {{ record.age }}次</a>
           </span>
         </template>
 
         //下载次数
         <template #download="{ record }">
           <span>
-            <a>Invite 一 {{ record.age }}</a>
+            <a> {{ record.age }}次</a>
+          </span>
+        </template>
+
+        //最后浏览时间
+        <template #seeTime="{ record }">
+          <span>
+            {{ record.seeTime }}
           </span>
         </template>
 
         //操作
         <template #actions="{ record }">
-          <!-- <span>
-            {{ record.action }}
-          </span> -->
           <a-dropdown>
-            <a class="ant-dropdown-link" @click.prevent> ... </a>
+            <div class="ant-dropdown-link dot" @click.prevent>...</div>
             <template #overlay>
               <a-menu>
                 <a-menu-item key="0">
@@ -166,7 +207,7 @@
                       <span v-for="(tag, index) in tags" :key="index">
                         <a-tag
                           :key="tag.key"
-                          :closable="index > 3"
+                          :closable="true"
                           @close="handleClose(tag)"
                           @click="handleTagClick(tag)"
                           :color="tag.isClick ? 'cyan' : ''"
@@ -234,18 +275,17 @@
                   <a-modal
                     v-model:visible="visible2"
                     title="应用"
-                    @ok="handleOk"
+                    @ok="handleOk2"
                     ok-text="确认"
                     cancel-text="取消"
                   >
-                    <p>Some contents...</p>
-                    <p>Some contents...</p>
-                    <p>Some contents...</p>
-                    <p>Some contents...</p>
-                    <p>Some contents...</p>
-                    <p>Some contents...</p>
-                    <p>Some contents...</p>
-                    <p>Some contents...</p>
+                    <div
+                      v-for="(item, i) in applications"
+                      :key="i"
+                      class="applications"
+                    >
+                      <a :href="item.url">{{ item.name }}</a>
+                    </div>
                   </a-modal>
                 </a-menu-item>
                 <a-menu-item key="7">
@@ -317,6 +357,13 @@ export default defineComponent({
       totalTag: [], //
       inputVisible: false,
       inputValue: "",
+      applications: [
+        { key: 1, name: "科学城大屏展示", url: "https://baidu.com" },
+        { key: 2, name: "查看Excel内容", url: "https://baidu.com" },
+        { key: 3, name: "查看图片", url: "https://baidu.com" },
+        { key: 4, name: "XXX部门大屏展示", url: "https://baidu.com" },
+      ],
+      changeList:true
     });
 
     const inputRef = ref();
@@ -421,6 +468,11 @@ export default defineComponent({
         slots: { customRender: "download" },
       },
       {
+        title: "最后浏览时间",
+        key: "seeTime",
+        slots: { customRender: "seeTime" },
+      },
+      {
         title: " ",
         key: "actions",
         dataIndex: "tags",
@@ -433,7 +485,9 @@ export default defineComponent({
         name:
           "云销售项目111111111111111111111111111111111111111111111111111111111111111111111",
         age: 32,
-        address: "New York No. 1 Lake Park",
+        size: "18KB",
+        isFiled: "已归档",
+        seeTime: "2020-05-07",
         tags: [
           {
             key: "机密",
@@ -452,7 +506,9 @@ export default defineComponent({
         key: "1",
         name: "Jim Green",
         age: 42,
-        address: "London No. 1 Lake Park",
+        isFiled: "未归档",
+        size: "18KB",
+        seeTime: "2020-05-07",
         tags: [
           {
             key: "机密",
@@ -470,7 +526,9 @@ export default defineComponent({
         key: "2",
         name: "Joe Black",
         age: 32,
-        address: "Sidney No. 1 Lake Park",
+        isFiled: "未归档",
+        size: "18KB",
+        seeTime: "2020-05-07",
         tags: [
           {
             key: "机密",
@@ -486,8 +544,10 @@ export default defineComponent({
       {
         key: "3",
         name: "Joe Black",
+        isFiled: "未归档",
+        size: "18KB",
         age: 32,
-        address: "Sidney No. 1 Lake Park",
+        seeTime: "2020-05-07",
         tags: [
           {
             key: "机密",
@@ -503,8 +563,10 @@ export default defineComponent({
       {
         key: "4",
         name: "Joe Black",
+        isFiled: "未归档",
+        size: "18KB",
         age: 32,
-        address: "Sidney No. 1 Lake Park",
+        seeTime: "2020-05-07",
         tags: [
           {
             key: "机密",
@@ -538,6 +600,15 @@ export default defineComponent({
       //   { key: 3, name: "工作", isClick: false },
       //   { key: 4, name: "加油", isClick: false },
       // ];
+      // if(selectTag&&selectTag.tags){
+      //   state.tags=selectTag.tags.map((item,index)=>{
+      //     return{
+      //       key:index,
+      //       name:item.key,
+      //       isClick:true
+      //     }
+      //   })
+      // }
       selectTag = record;
       console.log(selectTag);
       visible1.value = true;
@@ -556,7 +627,7 @@ export default defineComponent({
       console.log(3333, e);
       //合并系统标签和自定义标签
       state.totalTag = state.tags.concat(state.tags1);
-      console.log(55555,state.totalTag);
+      console.log(55555, state.totalTag);
 
       //选择标签
       selectTag.tags = state.totalTag
@@ -564,7 +635,7 @@ export default defineComponent({
         .map((item) => {
           return {
             key: item.name,
-            //cyan:青绿色
+            //cyan:青绿色s
             color: item.isClick ? "cyan" : "",
           };
         });
@@ -720,6 +791,26 @@ export default defineComponent({
   margin: 10px;
 }
 .system-tag {
+  padding-bottom: 20px;
   border-bottom: 1px solid #f0f2f5;
+  margin-bottom: 20px;
 }
+.applications {
+  padding: 10px 5px;
+}
+.dot {
+  font-size: 25px;
+  font-weight: 700;
+}
+.list{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.icon-liebiaoqiehuan-1,.icon-liebiaoqiehuan-{
+  font-size: 25px;
+}
+/* .icon{
+  font-size: 100px;
+} */
 </style>

@@ -28,11 +28,17 @@ const routes = [
         component: ()=> import("../components/myFile.vue"),
       },
       {
-        // 当 /user/:id/profile 匹配成功，
-        // UserProfile 会被渲染在 User 的 <router-view> 中
-        path: 'mymian',
-        component: ()=> import("../components/myMian.vue"),
-      }
+        path: 'sharedoc',
+        component: ()=> import("../components/shareDoc"),
+      },
+      {
+        path: 'collaborationdoc',
+        component: ()=> import("../components/collaborationDoc.vue"),
+      },
+      {
+        path: 'mycollection',
+        component: ()=> import("../components/myCollection.vue"),
+      },
     ]
     
     

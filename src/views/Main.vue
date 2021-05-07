@@ -3,30 +3,39 @@
     <a-layout>
       <a-layout-header class="header"> </a-layout-header>
       <a-layout-header class="header2">
-          <div class="left-con">
-            <div class="title">文件管理系统</div>
+        <div class="left-con">
+          <div class="title">文件管理系统</div>
 
-            <a-input
-              placeholder="搜索"
-              v-model:value="userName"
-              class="input"
-              suffix="="
-            >
-              <template #prefix>
-                <search-outlined type="user" />
-              </template>
-            </a-input>
+          <a-input
+            placeholder="搜索"
+            v-model:value="userName"
+            class="input"
+            
+          >
+            <template #prefix>
+              <search-outlined type="user" />
+            </template>
+          </a-input>
+        </div>
+        <div class="right-con">
+          <div class="news">
+            <i class="icon iconfont icon-xiaoxi"></i>
+            <a href="#">
+              <a-badge count="5">
+                <span class="head-example" />
+              </a-badge>
+            </a>
           </div>
-          <div class="right-con">
-            <div class="news"> <i class="icon iconfont icon-xiaoxi"></i></div>
-            <div><img
-                    :src="displayPicture"
-                    alt="图片"
-                    onerror=""
-                    class="displayPicture"
-                  /></div>
-            <div>2333<DownOutlined /></div>
+          <div>
+            <img
+              :src="displayPicture"
+              alt="图片"
+              onerror=""
+              class="displayPicture"
+            />
           </div>
+          <div>2333<DownOutlined /></div>
+        </div>
       </a-layout-header>
 
       <a-layout>
@@ -42,6 +51,7 @@
             </a-menu-item>
             <a-sub-menu key="sub1">
               <template #title>
+                
                 <span> 我的空间 </span>
               </template>
               <a-menu-item key="1"
@@ -49,9 +59,13 @@
                   >我的文档</router-link
                 ></a-menu-item
               >
-              <a-menu-item key="2">共享文档</a-menu-item>
-              <a-menu-item key="3">协作文档</a-menu-item>
-              <a-menu-item key="4">我的收藏</a-menu-item>
+              <a-menu-item key="2">
+                <router-link to="/main/sharedoc"><span> 共享文档</span></router-link>
+                </a-menu-item>
+              <a-menu-item key="3">
+                <router-link to="/main/collaborationdoc"><span> 协作文档</span></router-link></a-menu-item>
+              <a-menu-item key="4">
+                <router-link to="/main/mycollection"><span> 我的收藏</span></router-link></a-menu-item>
             </a-sub-menu>
             <a-menu-item key="sub2">
               <span>圈子管理</span>
@@ -74,12 +88,12 @@
 </template>
 
 <script>
-import { SearchOutlined,DownOutlined } from "@ant-design/icons-vue";
+import { SearchOutlined, DownOutlined } from "@ant-design/icons-vue";
 import { defineComponent, ref } from "vue";
 export default defineComponent({
   components: {
     SearchOutlined,
-    DownOutlined
+    DownOutlined,
   },
   setup() {
     return {
@@ -87,7 +101,7 @@ export default defineComponent({
       collapsed: ref(false),
       openKeys: ref(["sub1"]),
       userName: ref(""),
-      displayPicture:require('../assets/cat.jpg')
+      displayPicture: require("../assets/cat.jpg"),
     };
   },
 });
@@ -107,7 +121,7 @@ export default defineComponent({
   margin: 16px 0 16px 24px;
 }
 
-.news{
+.news {
   margin-right: 30px;
 }
 .site-layout-background {
@@ -174,10 +188,10 @@ export default defineComponent({
   display: flex;
   align-items: center;
 }
-.right-con{
+.right-con {
   display: flex;
 }
-.displayPicture{
+.displayPicture {
   width: 50px;
   height: 50px;
   border-radius: 50%;
