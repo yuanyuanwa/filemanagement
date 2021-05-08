@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 2526348 */
-  src: url('iconfont.woff2?t=1620374972150') format('woff2'),
-       url('iconfont.woff?t=1620374972150') format('woff'),
-       url('iconfont.ttf?t=1620374972150') format('truetype');
+  src: url('iconfont.woff2?t=1620439074013') format('woff2'),
+       url('iconfont.woff?t=1620439074013') format('woff'),
+       url('iconfont.ttf?t=1620439074013') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,22 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-word:before {
+  content: "\eaed";
+}
+
+.icon-pingmu:before {
+  content: "\ec6f";
+}
+
+.icon-Excel:before {
+  content: "\e60e";
+}
+
+.icon-tupian:before {
+  content: "\e6ce";
 }
 
 .icon-liebiaoqiehuan-:before {

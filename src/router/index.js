@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHistory,createWebHashHistory } from "vue-router";
 import login from "../views/Login.vue";
 // import main from "../views/Main.vue";
 // import Login from "../views/a.vue";
@@ -57,7 +57,8 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  // history: createWebHistory(process.env.BASE_URL),
+  history:createWebHashHistory(),
   routes,
 });
 

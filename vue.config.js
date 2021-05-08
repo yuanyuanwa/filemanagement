@@ -13,6 +13,20 @@ module.exports = {
     
     }
     
+    },
+    lintOnSave:false,
+    // publicPath:"/mda/vision/calendar/",
+    devServer: {
+    // host: '127.0.0.1',
+    // port: 9090,
+    // proxy:"http://127.0.0.1:5465"
+    proxy: {
+      '/*': {
+        target: "http://192.168.5.136:5465",
+        //  target: "http://madata.cn:5465",
+        changeOrigin: true
+      }
     }
+  }
     
     };
