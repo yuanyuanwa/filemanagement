@@ -18,8 +18,8 @@ const routes = [
       {
         // 当 /user/:id/profile 匹配成功，
         // UserProfile 会被渲染在 User 的 <router-view> 中
-        path: 'mymian',
-        component: ()=> import("../components/myMian.vue"),
+        path: 'mymain',
+        component: ()=> import("../components/myMain.vue"),
       },
       {
         // 当 /user/:id/profile 匹配成功，
@@ -39,6 +39,12 @@ const routes = [
         path: 'mycollection',
         component: ()=> import("../components/myCollection.vue"),
       },
+      {
+        path: "filedetail",
+        // name: "About",
+        component: () =>
+          import("../components/fileDetail.vue"),
+      },
     ]
     
     
@@ -50,10 +56,20 @@ const routes = [
       import("../views/About.vue"),
   },
   {
+    path: "/aa",
+    name: "About",
+    component: () =>import( "../components/myFile.vue"),
+  },
+  {
     path: "/bb",
     name: "About",
-    component: () => import( "../views/a.vue"),
+    component: () => import( "../components/myFile.vue"),
   },
+  // {
+  //   path: "/filedetail",
+  //   name: "About",
+  //   component: () => import( "../components/a.vue"),
+  // },
 ];
 
 const router = createRouter({

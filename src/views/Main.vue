@@ -47,7 +47,7 @@
             :style="{ height: '100%', borderRight: 0, textAlign: 'left' }"
           >
             <a-menu-item key="sub0">
-              <router-link to="/main/mymian"><span> 首页</span></router-link>
+              <router-link to="/main/mymain"><span> 首页</span></router-link>
             </a-menu-item>
             <a-sub-menu key="sub1">
               <template #title>

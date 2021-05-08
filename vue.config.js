@@ -22,6 +22,7 @@ module.exports = {
     // proxy:"http://127.0.0.1:5465"
     proxy: {
       '/*': {
+        //代理
         target: "http://192.168.5.136:5465",
         //  target: "http://madata.cn:5465",
         changeOrigin: true

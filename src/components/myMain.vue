@@ -47,7 +47,7 @@
       <div class="list">
         <div>
           <a-radio-group v-model:value="size" class="button">
-            <a-radio-button value="large" @click="showModal"
+            <a-radio-button value="large" @click.prevent="showModal"
               >分享</a-radio-button
             >
             <a-modal
@@ -69,7 +69,7 @@
             <a-radio-button value="large">收藏</a-radio-button>
             <a-radio-button value="large">下载</a-radio-button>
             <a-radio-button value="large">移动到</a-radio-button>
-            <a-radio-button value="large" @click="del"
+            <a-radio-button value="large" @click.prevent="del"
               >删除</a-radio-button
             >
           </a-radio-group>
@@ -88,7 +88,8 @@
     </div>
 
     <div class="content">
-      <div v-if="view">
+      <router-link to="/filedetail" >
+        <div v-if="view" @click="del">
         <a-table
           :row-selection="{
             selectedRowKeys: selectedRowKeys,
@@ -100,7 +101,6 @@
           <template #name="scope">
             <div
               style="display: flex; justify-content: space-between"
-              @click="detail()"
             >
               <div style="word-break: break-all; width: 300px">
                 <FileOutlined />
@@ -302,15 +302,15 @@
                     >
                       <div class="app">
                         <div>
-                          <!-- <div
+                          <div
                             v-for="(item, i) in applications"
                             :key="i"
                             class="applications"
                           >
                             <i :class="[icon, iconfont, item.iconname]"></i>
                             <a :href="item.url">{{ item.name }}</a>
-                          </div> -->
-                          <div>{{applications}}</div>
+                          </div>
+                          <div>{{appli}}</div>
                         </div>
                       </div>
                     </a-modal>
@@ -343,6 +343,7 @@
           </template>
         </a-table>
       </div>
+
       <div v-else>
         <div class="document">
           <div v-for="(item, i) in data" :key="i">
@@ -361,6 +362,263 @@
           </div> -->
         </div>
       </div>
+      </router-link>
+
+      <!-- <div v-if="view" @click="del">
+        <a-table
+          :row-selection="{
+            selectedRowKeys: selectedRowKeys,
+            onChange: onSelectChange,
+          }"
+          :data-source="data"
+          :columns="columns"
+        >
+          <template #name="scope">
+            <div
+              style="display: flex; justify-content: space-between"
+            >
+              <div style="word-break: break-all; width: 300px">
+                <FileOutlined />
+                <span @click="handleClickScope(scope)">{{ scope.text }}</span>
+                <span v-for="tag in scope.record.tags" :key="tag">
+                  <a-tag
+                    v-if="tag.isClick || tag.isSystemTag"
+                    :key="tag"
+                    :color="tag.color"
+                  >
+                    {{ tag.key }}
+                  </a-tag>
+                </span>
+              </div>
+              <div @click="handleStarChange(scope.record.key)">
+                <div v-if="scope.record.icon">
+                  <svg class="icon" aria-hidden="true">
+                    <use xlink:href="#icon-xingxing"></use>
+                  </svg>
+                </div>
+                <div v-else>
+                  <i class="icon iconfont icon-xingxing1"></i>
+                </div>
+              </div>
+            </div>
+          </template>
+          <template #customTitle>
+            <span> 文件名称 </span>
+          </template>
+
+          //大小
+          <template #size="{ record }">
+            <span>
+              {{ record.size }}
+            </span>
+          </template>
+
+          //状态
+          <template #state="{ record }">
+            <span>
+              {{ record.isFiled }}
+            </span>
+          </template>
+
+          //浏览次数
+          <template #see="{ record }">
+            <span>
+              <a> {{ record.age }}次</a>
+            </span>
+          </template>
+
+          //下载次数
+          <template #download="{ record }">
+            <span>
+              <a> {{ record.age }}次</a>
+            </span>
+          </template>
+
+          //最后浏览时间
+          <template #seeTime="{ record }">
+            <span>
+              {{ record.seeTime }}
+            </span>
+          </template>
+
+          //操作
+          <template #actions="{ record }">
+            <a-dropdown>
+              <div class="ant-dropdown-link dot" @click.prevent>...</div>
+              <template #overlay>
+                <a-menu>
+                  <a-menu-item key="0">
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href="http://www.alipay.com/"
+                    >
+                      <i class="icon iconfont icon-fenxiang1"></i>
+                      分享
+                    </a>
+                  </a-menu-item>
+                  <a-menu-item key="1">
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href="http://www.taobao.com/"
+                    >
+                      <i class="icon iconfont icon-xiezuo_huaban1"></i>
+                      协作
+                    </a>
+                  </a-menu-item>
+                  <a-menu-item key="2">
+                    <a rel="noopener noreferrer" @click="showModal1(record)">
+                      <i class="icon iconfont icon-tianjiabiaoqian"></i>
+                      添加标签
+                    </a>
+                    <a-modal
+                      v-model:visible="visible1"
+                      title="添加标签"
+                      @ok="handleOk1"
+                      ok-text="确认"
+                      cancel-text="取消"
+                    >
+                      <div class="tag">
+                        <div class="system-tag">
+                          <div>系统标签：</div>
+                          <div>
+                            <span
+                              v-for="(tag, index) in systemTags"
+                              :key="index"
+                            >
+                              <a-tag
+                                :key="tag.key"
+                                :closable="false"
+                                @close="handleClose(tag)"
+                                @click="handleTagClick1(tag)"
+                                :color="tag.isClick ? 'cyan' : ''"
+                              >
+                                {{ tag.name }}
+                              </a-tag>
+                            </span>
+                          </div>
+                        </div>
+                        <div class="">自定义标签：</div>
+                        <span v-for="(tag, index) in tags" :key="index">
+                          <a-tag
+                            :key="tag.key"
+                            :closable="true"
+                            @close="handleClose(tag)"
+                            @click="handleTagClick(tag)"
+                            :color="tag.isClick ? 'cyan' : ''"
+                          >
+                            {{ tag.name }}
+                          </a-tag>
+                        </span>
+                        <a-input
+                          v-if="inputVisible"
+                          ref="inputRef"
+                          type="text"
+                          size="small"
+                          :style="{ width: '78px' }"
+                          v-model:value="inputValue"
+                          @blur="handleInputConfirm"
+                          @keyup.enter="handleInputConfirm"
+                        />
+                        <a-tag
+                          v-else
+                          @click="showInput"
+                          style="background: #fff; border-style: dashed"
+                          color="blue"
+                        >
+                          <plus-outlined />
+                          自定义标签
+                        </a-tag>
+                      </div>
+                    </a-modal>
+                  </a-menu-item>
+                  <a-menu-item key="3">
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href="http://www.taobao.com/"
+                    >
+                      <i class="icon iconfont icon-zhongmingming"></i>
+                      重命名
+                    </a>
+                  </a-menu-item>
+                  <a-menu-item key="4">
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href="http://www.taobao.com/"
+                    >
+                      <i class="icon iconfont icon-xiazai"></i>
+                      下载
+                    </a>
+                  </a-menu-item>
+                  <a-menu-item key="5">
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href="http://www.taobao.com/"
+                    >
+                      <i class="icon iconfont icon-shoucang"></i>
+                      收藏
+                    </a>
+                  </a-menu-item>
+                  <a-menu-item key="6">
+                    <a rel="noopener noreferrer" @click="showModal2">
+                      <i class="icon iconfont icon-yingyong"></i>
+                      应用
+                    </a>
+                    <a-modal
+                      v-model:visible="visible2"
+                      title="应用"
+                      @ok="handleOk2"
+                      ok-text="确认"
+                      cancel-text="取消"
+                    >
+                      <div class="app">
+                        <div>
+                          <div
+                            v-for="(item, i) in applications"
+                            :key="i"
+                            class="applications"
+                          >
+                            <i :class="[icon, iconfont, item.iconname]"></i>
+                            <a :href="item.url">{{ item.name }}</a>
+                          </div>
+                          <div>{{appli}}</div>
+                        </div>
+                      </div>
+                    </a-modal>
+                  </a-menu-item>
+                  <a-menu-item key="7">
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href="http://www.taobao.com/"
+                    >
+                      <i
+                        class="icon iconfont icon-icon-quanju-baocuncundang"
+                      ></i>
+                      存档
+                    </a>
+                  </a-menu-item>
+                  <a-menu-item key="8">
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href="http://www.taobao.com/"
+                    >
+                      <i class="icon iconfont icon-delete"></i>
+                      删除
+                    </a>
+                  </a-menu-item>
+                </a-menu>
+              </template>
+            </a-dropdown>
+          </template>
+        </a-table>
+      </div> -->
+     
     </div>
   </div>
 </template>
@@ -445,6 +703,7 @@ export default defineComponent({
       view: true,
       icon: "icon",
       iconfont: "iconfont",
+      appli:''
       // iconname:ref('icon-0-57')
     });
 
@@ -815,8 +1074,8 @@ export default defineComponent({
     const showModal2 = () => {
       calldps('p111').then((res)=>{
       console.log(res)
-      state.applications=res
-      console.log(state.applications);
+      state.appli=res
+      console.log(state.appli);
     });
       visible2.value = true;
     };
@@ -897,9 +1156,8 @@ export default defineComponent({
       console.log(2, key);
       data.value[key].icon = !data.value[key].icon;
     };
-    const detail = () => {
-      console.log(1111);
-    };
+
+
 
     const hasSelected = computed(() => state.selectedRowKeys.length > 0);
 
@@ -935,7 +1193,6 @@ export default defineComponent({
       start,
       onSelectChange,
       handleStarChange,
-      detail,
       value: ref([]),
       list,
       creatTag,
