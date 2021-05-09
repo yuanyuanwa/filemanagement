@@ -11,65 +11,63 @@ const routes = [
     
   },
   {
-    path: "/main",
-    name: "main",
-    component: ()=> import("../views/Main.vue"),
+    path: "/home",
+    name: "home",
+    component: ()=> import("../views/Home.vue"),
     children: [
       {
         // 当 /user/:id/profile 匹配成功，
         // UserProfile 会被渲染在 User 的 <router-view> 中
         path: 'mymain',
-        component: ()=> import("../components/myMain.vue"),
+        component: ()=> import("../components/pages/myMain.vue"),
       },
       {
         // 当 /user/:id/profile 匹配成功，
         // UserProfile 会被渲染在 User 的 <router-view> 中
         path: 'myfile',
-        component: ()=> import("../components/myFile.vue"),
+        component: ()=> import("../components/pages/myFile.vue"),
       },
       {
         path: 'sharedoc',
-        component: ()=> import("../components/shareDoc"),
+        component: ()=> import("../components/pages/shareDoc"),
       },
       {
         path: 'collaborationdoc',
-        component: ()=> import("../components/collaborationDoc.vue"),
+        component: ()=> import("../components/pages/collaborationDoc.vue"),
       },
       {
         path: 'mycollection',
-        component: ()=> import("../components/myCollection.vue"),
-      },
-      {
-        path: "filedetail",
-        // name: "About",
-        component: () =>
-          import("../components/fileDetail.vue"),
+        component: ()=> import("../components/pages/myCollection.vue"),
       },
     ]
-    
-    
+       
     },
   {
     path: "/about",
     name: "About",
     component: () =>
-      import("../views/About.vue"),
-  },
-  {
-    path: "/aa",
-    name: "About",
-    component: () =>import( "../components/myFile.vue"),
+      import( "../views/About.vue"),
   },
   {
     path: "/bb",
     name: "About",
-    component: () => import( "../components/myFile.vue"),
+    component: () => import( "../components/pages/myFile.vue"),
   },
-  // {
-  //   path: "/filedetail",
-  //   name: "About",
-  //   component: () => import( "../components/a.vue"),
-  // },
+  {
+    path: "/cc",
+    name: "About",
+    component: () => import( "../components/pages/myFile.vue"),
+  },
+  {
+    path: "/ab",
+    name: "ab",
+    component: () => import( "../components/pages/b.vue"),
+  },
+  {
+    path: "/filedetail",
+    name: "About",
+    component: () => import( "../components/pages/detail.vue"),
+  },
 ];
 
 const router = createRouter({
