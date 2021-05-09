@@ -51,7 +51,7 @@
       <div class="list">
         <div>
           <a-radio-group v-model:value="size" class="button">
-            <a-radio-button value="large" @click.prevent="showModal"
+            <!-- <a-radio-button value="large" @click.prevent="showModal"
               >分享</a-radio-button
             >
             <a-modal
@@ -69,37 +69,16 @@
               <p>Some contents...</p>
               <p>Some contents...</p>
               <p>Some contents...</p>
-            </a-modal>
+            </a-modal> -->
             <!-- <a-radio-button value="large">收藏</a-radio-button> -->
-            <a-radio-button value="large">下载</a-radio-button>
-            <a-radio-button value="large">取消收藏</a-radio-button>
+            <a-radio-button value="large">还原</a-radio-button>
+            <a-radio-button value="large">删除</a-radio-button>
             <!-- <a-radio-button value="large">移动到</a-radio-button> -->
             <!-- <a-radio-button value="large" @click.prevent="del"
               >删除</a-radio-button -->
           </a-radio-group>
         </div>
-        <div style="display:flex">
-            <div>
-                 <a-input
-            placeholder="请输入关键字搜索文档"
-            v-model:value="userName"
-            class="input"
-            
-          >
-            <template #prefix>
-              <search-outlined type="user" />
-            </template>
-          </a-input>
-            </div>
-          <div @click="changeView">
-            <div v-if="changeList">
-              <i class="icon iconfont icon-liebiaoqiehuan-1 changeList"></i>
-            </div>
-            <div v-else>
-              <i class="icon iconfont icon-liebiaoqiehuan- changeList"></i>
-            </div>
-          </div>
-        </div>
+        
       </div>
     </div>
 
@@ -184,8 +163,30 @@
             </span>
           </template>
 
-          //操作
           <template #actions="{ record }">
+              <div @click.prevent="showModal">还原</div>
+            
+            <a-modal
+              v-model:visible="visible"
+              title="提示"
+              @ok="handleOk"
+              ok-text="确认"
+              cancel-text="取消"
+            >
+              <div style="display:flex;align-items:center;justify-content:center;">
+                  <div style="margin-right:10px">
+                       <svg class="icon tip" aria-hidden="true">
+                    <use xlink:href="#icon-tishi_"></use>
+                  </svg>
+                  </div>
+                  <div>确认把所选文件还原至原目录吗？</div>
+              </div>
+            </a-modal>
+            <!-- <div class="ant-dropdown-link dot" @click.prevent>...</div> -->
+          </template>
+
+          //操作
+          <!-- <template #actions="{ record }">
             <a-dropdown>
               <div class="ant-dropdown-link dot" @click.prevent>...</div>
               <template #overlay>
@@ -358,7 +359,7 @@
                 </a-menu>
               </template>
             </a-dropdown>
-          </template>
+          </template> -->
         </a-table>
       </div>
 
@@ -585,7 +586,7 @@ const changecolor1=()=>{
     //     slots: { customRender: "download" },
     //   },
       {
-        title: "最后修改时间",
+        title: "最后删除时间",
         key: "seeTime",
         slots: { customRender: "seeTime" },
       },
@@ -1028,5 +1029,9 @@ display: flex;
   height: 40px;
   margin-right: 10px;
   border-radius: 20px;
+}
+.tip{
+    width: 3em;
+    height: 3em;
 }
 </style>

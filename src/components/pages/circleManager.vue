@@ -1,11 +1,14 @@
 <template>
-  <div class="page-con">
+    <div style="display:flex;justify-content:space-between">
+<div class="left-con">
+11111
+</div>
+<div class="right-con">
+<div class="page-con">
     <div class="head">
-      <!-- <div class="head-con">
-        <div class="recently">
-           
-            <div style="margin-right:20px" :class="{active:isactive}" @click="changecolor">我参与的协作</div>
-            <div :class="{active:isactive1}" @click="changecolor1">我发起的协作</div>
+      <div class="head-con">
+        <div class="recently">   
+            XXX的圈子
         </div>
         <div>
           <a-dropdown>
@@ -47,14 +50,14 @@
             </template>
           </a-dropdown>
         </div>
-      </div> -->
+      </div>
       <div class="list">
         <div>
           <a-radio-group v-model:value="size" class="button">
             <a-radio-button value="large" @click.prevent="showModal"
-              >分享</a-radio-button
+              >下载</a-radio-button
             >
-            <a-modal
+            <!-- <a-modal
               v-model:visible="visible"
               title="分享文档"
               @ok="handleOk"
@@ -69,28 +72,17 @@
               <p>Some contents...</p>
               <p>Some contents...</p>
               <p>Some contents...</p>
-            </a-modal>
+            </a-modal> -->
             <!-- <a-radio-button value="large">收藏</a-radio-button> -->
-            <a-radio-button value="large">下载</a-radio-button>
-            <a-radio-button value="large">取消收藏</a-radio-button>
+            <a-radio-button value="large">移动到</a-radio-button>
+            <a-radio-button value="large">删除</a-radio-button>
             <!-- <a-radio-button value="large">移动到</a-radio-button> -->
             <!-- <a-radio-button value="large" @click.prevent="del"
               >删除</a-radio-button -->
           </a-radio-group>
         </div>
-        <div style="display:flex">
-            <div>
-                 <a-input
-            placeholder="请输入关键字搜索文档"
-            v-model:value="userName"
-            class="input"
+       
             
-          >
-            <template #prefix>
-              <search-outlined type="user" />
-            </template>
-          </a-input>
-            </div>
           <div @click="changeView">
             <div v-if="changeList">
               <i class="icon iconfont icon-liebiaoqiehuan-1 changeList"></i>
@@ -99,7 +91,7 @@
               <i class="icon iconfont icon-liebiaoqiehuan- changeList"></i>
             </div>
           </div>
-        </div>
+       
       </div>
     </div>
 
@@ -384,6 +376,8 @@
      
     </div>
   </div>
+</div>
+    </div>
 </template>
 
 <script>
@@ -456,21 +450,12 @@ export default defineComponent({
       icon: "icon",
       iconfont: "iconfont",
       appli:'',
-      isactive:true,
-      isactive1:false,
+
       // iconname:ref('icon-0-57')
     });
 
     const inputRef = ref();
 
-const changecolor=()=>{
-    state.isactive=true
-    state.isactive1=false
-}
-const changecolor1=()=>{
-    state.isactive=false
-    state.isactive1=true
-}
     //删除选中的文件
     const del=()=>{
       //发起删除请求
@@ -883,9 +868,6 @@ const changecolor1=()=>{
       handleTagClick1,
       changeView,
       del,
-      changecolor,
-      changecolor1,
-      
     };
   },
 });
@@ -910,7 +892,7 @@ display: flex;
 
 }
 .head-con {
-  padding: 40px 18px 0px 18px;
+  padding: 20px 18px 0px 18px;
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
@@ -1023,10 +1005,14 @@ display: flex;
 .active{
     color: blue;
 }
-.input {
-  width: 400px;
-  height: 40px;
-  margin-right: 10px;
-  border-radius: 20px;
+.left-con{
+    border: 1px solid palevioletred;
+    flex:1;
+    margin: 10px;
+}
+.right-con{
+    margin: 10px;
+    border: 1px solid paleturquoise;
+    flex:3;
 }
 </style>

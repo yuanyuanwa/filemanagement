@@ -6,6 +6,20 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "7821205",
+      "name": "提示",
+      "font_class": "tishi_",
+      "unicode": "e656",
+      "unicode_decimal": 58966
+    },
+    {
+      "icon_id": "3369109",
+      "name": "修改",
+      "font_class": "xiugai",
+      "unicode": "e66f",
+      "unicode_decimal": 58991
+    },
+    {
       "icon_id": "11235326",
       "name": "word",
       "font_class": "word",

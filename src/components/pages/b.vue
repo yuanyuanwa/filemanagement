@@ -528,7 +528,7 @@ export default defineComponent({
         slots: { customRender: "download" },
       },
       {
-        title: "最后浏览时间",
+        title: "最后修改时间",
         key: "seeTime",
         slots: { customRender: "seeTime" },
       },

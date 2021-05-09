@@ -39,6 +39,18 @@ const routes = [
         path: 'mycollection',
         component: ()=> import("../components/pages/myCollection.vue"),
       },
+      {
+        path: 'circlemanager',
+        component: ()=> import("../components/pages/circleManager.vue"),
+      },
+      {
+        path: 'templatemanager',
+        component: ()=> import("../components/pages/templateManager.vue"),
+      },
+      {
+        path: 'recycle',
+        component: ()=> import("../components/pages/recycle.vue"),
+      },
     ]
        
     },

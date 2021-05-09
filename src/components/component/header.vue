@@ -100,4 +100,7 @@ export default defineComponent({
   border-radius: 50%;
   margin-right: 10px;
 }
+/deep/ .ant-layout-header{
+  z-index: 100;
+}
 </style>
