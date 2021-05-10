@@ -1,63 +1,122 @@
 <template>
-    <div style="display:flex;justify-content:space-between">
-<div class="left-con">
-11111
-</div>
-<div class="right-con">
-<div class="page-con">
-    <div class="head">
-      <div class="head-con">
-        <div class="recently">   
-            XXX的圈子
+  <div style="display: flex; justify-content: space-between">
+    <div class="left-con">
+      <div class="up">
+        <a-input
+          placeholder="输入关键字搜索"
+          v-model:value="userName"
+          class="input"
+        >
+          <template #prefix>
+            <search-outlined type="user" />
+          </template>
+        </a-input>
+        <div class="circlename">
+          <div>
+            <img src="" alt="图片" />
+          </div>
+          <div>XXX圈子</div>
         </div>
-        <div>
-          <a-dropdown>
-            <a-button @click.prevent type="primary" class="upload">
-              上传</a-button
-            >
-            <template #overlay>
-              <a-menu>
-                <a-menu-item>
-                  <a-upload
-                    action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                  >
-                    <a href="javascript:;">上传文件</a>
-                  </a-upload>
-                </a-menu-item>
-
-                <a-menu-item>
-                  <a-upload
-                    action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                    directory
-                  >
-                    <a href="javascript:;">上传文件夹</a>
-                  </a-upload>
-                </a-menu-item>
-              </a-menu>
-            </template>
-          </a-dropdown>
-          <a-dropdown>
-            <a-button @click.prevent type="defalut"> 下载 </a-button>
-            <template #overlay>
-              <a-menu>
-                <a-menu-item>
-                  <a href="javascript:;">新建文件</a>
-                </a-menu-item>
-                <a-menu-item>
-                  <a href="javascript:;">新建文件夹</a>
-                </a-menu-item>
-              </a-menu>
-            </template>
-          </a-dropdown>
+        <div class="circlename">
+          <div>
+            <img src="" alt="图片" />
+          </div>
+          <div>XXX圈子</div>
         </div>
       </div>
-      <div class="list">
+      <div class="down">
+        <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #f0f2f5;padding:10px">
+          <div>圈子成员（56）</div>
+          <div><a href="">+新增成员</a></div>
+        </div>
         <div>
-          <a-radio-group v-model:value="size" class="button">
-            <a-radio-button value="large" @click.prevent="showModal"
-              >下载</a-radio-button
-            >
-            <!-- <a-modal
+          <div style="display: flex;padding:30px 10px 30px 10px">
+                           <div class="shareman">李红</div>
+              <div class="shareman">李喜庆</div>
+              <div class="shareman">嘻嘻嘻嘻嘻嘻。。。。。</div>
+              <div class="jia">···</div>
+              </div>
+        </div>
+        <div style="text-align:left">动态 :</div>
+        <div style="border-bottom:1px solid #f0f2f5;text-align:left;padding:20px">
+          <div>
+            XXXXX上传了文件
+          </div>
+          <div>
+            2021-04-03
+          </div>
+          </div>
+        <div style="border-bottom:1px solid #f0f2f5;text-align:left;padding:20px">
+          <div>
+            XXXXX上传了文件
+          </div>
+          <div>
+            2021-04-03
+          </div>
+          </div>
+        <div style="boder:1px solid #f0f2f5;text-align:left;padding:20px">
+          <div>
+            XXXXX上传了文件
+          </div>
+          <div>
+            2021-04-03
+          </div>
+          </div>
+      </div>
+    </div>
+    <div class="right-con">
+      <div class="page-con">
+        <div class="head">
+          <div class="head-con">
+            <div class="recently">XXX的圈子</div>
+            <div>
+              <a-dropdown>
+                <a-button @click.prevent type="primary" class="upload">
+                  上传</a-button
+                >
+                <template #overlay>
+                  <a-menu>
+                    <a-menu-item>
+                      <a-upload
+                        action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                      >
+                        <a href="javascript:;">上传文件</a>
+                      </a-upload>
+                    </a-menu-item>
+
+                    <a-menu-item>
+                      <a-upload
+                        action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                        directory
+                      >
+                        <a href="javascript:;">上传文件夹</a>
+                      </a-upload>
+                    </a-menu-item>
+                  </a-menu>
+                </template>
+              </a-dropdown>
+              <a-dropdown>
+                <a-button @click.prevent type="defalut"> 下载 </a-button>
+                <template #overlay>
+                  <a-menu>
+                    <a-menu-item>
+                      <a href="javascript:;">新建文件</a>
+                    </a-menu-item>
+                    <a-menu-item>
+                      <a href="javascript:;">新建文件夹</a>
+                    </a-menu-item>
+                  </a-menu>
+                </template>
+              </a-dropdown>
+            </div>
+          </div>
+          <div class="list">
+            <div>
+              <a-radio-group v-model:value="size" class="button">
+                <a-radio-button value="large" @click.prevent="showModal"
+                  >下载</a-radio-button
+                >
+                <!-- <a-modal
               v-model:visible="visible"
               title="分享文档"
               @ok="handleOk"
@@ -73,315 +132,309 @@
               <p>Some contents...</p>
               <p>Some contents...</p>
             </a-modal> -->
-            <!-- <a-radio-button value="large">收藏</a-radio-button> -->
-            <a-radio-button value="large">移动到</a-radio-button>
-            <a-radio-button value="large">删除</a-radio-button>
-            <!-- <a-radio-button value="large">移动到</a-radio-button> -->
-            <!-- <a-radio-button value="large" @click.prevent="del"
+                <!-- <a-radio-button value="large">收藏</a-radio-button> -->
+                <a-radio-button value="large">移动到</a-radio-button>
+                <a-radio-button value="large">删除</a-radio-button>
+                <!-- <a-radio-button value="large">移动到</a-radio-button> -->
+                <!-- <a-radio-button value="large" @click.prevent="del"
               >删除</a-radio-button -->
-          </a-radio-group>
-        </div>
-       
-            
-          <div @click="changeView">
-            <div v-if="changeList">
-              <i class="icon iconfont icon-liebiaoqiehuan-1 changeList"></i>
+              </a-radio-group>
             </div>
-            <div v-else>
-              <i class="icon iconfont icon-liebiaoqiehuan- changeList"></i>
+
+            <div @click="changeView">
+              <div v-if="changeList">
+                <i class="icon iconfont icon-liebiaoqiehuan-1 changeList"></i>
+              </div>
+              <div v-else>
+                <i class="icon iconfont icon-liebiaoqiehuan- changeList"></i>
+              </div>
             </div>
           </div>
-       
-      </div>
-    </div>
+        </div>
 
-    <div class="content">
-      
-        <div v-if="view" @click="del">
-        <a-table
-          :row-selection="{
-            selectedRowKeys: selectedRowKeys,
-            onChange: onSelectChange,
-          }"
-          :data-source="data"
-          :columns="columns"
-        >
-          <template #name="scope">
-            <div
-              style="display: flex; justify-content: space-between"
+        <div class="content">
+          <div v-if="view" @click="del">
+            <a-table
+              :row-selection="{
+                selectedRowKeys: selectedRowKeys,
+                onChange: onSelectChange,
+              }"
+              :data-source="data"
+              :columns="columns"
             >
-              <div style="word-break: break-all; width: 300px">
-                <FileOutlined />
-                <router-link to="/filedetail" >
-                <span>{{ scope.text }}</span>
-                </router-link>
-                <span v-for="tag in scope.record.tags" :key="tag">
-                  <a-tag
-                    v-if="tag.isClick || tag.isSystemTag"
-                    :key="tag"
-                    :color="tag.color"
-                  >
-                    {{ tag.key }}
-                  </a-tag>
+              <template #name="scope">
+                <div style="display: flex; justify-content: space-between">
+                  <div style="word-break: break-all; width: 300px">
+                    <FileOutlined />
+                    <router-link to="/filedetail">
+                      <span>{{ scope.text }}</span>
+                    </router-link>
+                    <span v-for="tag in scope.record.tags" :key="tag">
+                      <a-tag
+                        v-if="tag.isClick || tag.isSystemTag"
+                        :key="tag"
+                        :color="tag.color"
+                      >
+                        {{ tag.key }}
+                      </a-tag>
+                    </span>
+                  </div>
+                  <div @click="handleStarChange(scope.record.key)">
+                    <div v-if="scope.record.icon">
+                      <svg class="icon" aria-hidden="true">
+                        <use xlink:href="#icon-xingxing"></use>
+                      </svg>
+                    </div>
+                    <div v-else>
+                      <i class="icon iconfont icon-xingxing1"></i>
+                    </div>
+                  </div>
+                </div>
+              </template>
+              <template #customTitle>
+                <span> 文件名称 </span>
+              </template>
+
+              //大小
+              <template #size="{ record }">
+                <span>
+                  {{ record.size }}
                 </span>
-              </div>
-              <div @click="handleStarChange(scope.record.key)">
-                <div v-if="scope.record.icon">
-                  <svg class="icon" aria-hidden="true">
-                    <use xlink:href="#icon-xingxing"></use>
-                  </svg>
-                </div>
-                <div v-else>
-                  <i class="icon iconfont icon-xingxing1"></i>
-                </div>
-              </div>
-            </div>
-          </template>
-          <template #customTitle>
-            <span> 文件名称 </span>
-          </template>
+              </template>
 
-          //大小
-          <template #size="{ record }">
-            <span>
-              {{ record.size }}
-            </span>
-          </template>
-
-          //状态
-          <!-- <template #state="{ record }">
+              //状态
+              <!-- <template #state="{ record }">
             <span>
               {{ record.isFiled }}
             </span>
           </template> -->
 
-          //浏览次数
-          <template #see="{ record }">
-            <span>
-              <a> {{ record.age }}次</a>
-            </span>
-          </template>
+              //浏览次数
+              <template #see="{ record }">
+                <span>
+                  <a> {{ record.age }}次</a>
+                </span>
+              </template>
 
-          //下载次数
-          <!-- <template #download="{ record }">
+              //下载次数
+              <!-- <template #download="{ record }">
             <span>
               <a> {{ record.age }}次</a>
             </span>
           </template> -->
 
-          //最后浏览时间
-          <template #seeTime="{ record }">
-            <span>
-              {{ record.seeTime }}
-            </span>
-          </template>
+              //最后浏览时间
+              <template #seeTime="{ record }">
+                <span>
+                  {{ record.seeTime }}
+                </span>
+              </template>
 
-          //操作
-          <template #actions="{ record }">
-            <a-dropdown>
-              <div class="ant-dropdown-link dot" @click.prevent>...</div>
-              <template #overlay>
-                <a-menu>
-                  <a-menu-item key="0">
-                    <a
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      href="http://www.alipay.com/"
-                    >
-                      <i class="icon iconfont icon-fenxiang1"></i>
-                      分享
-                    </a>
-                  </a-menu-item>
-                  <a-menu-item key="1">
-                    <a
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      href="http://www.taobao.com/"
-                    >
-                      <i class="icon iconfont icon-xiezuo_huaban1"></i>
-                      协作
-                    </a>
-                  </a-menu-item>
-                  <a-menu-item key="2">
-                    <a rel="noopener noreferrer" @click="showModal1(record)">
-                      <i class="icon iconfont icon-tianjiabiaoqian"></i>
-                      添加标签
-                    </a>
-                    <a-modal
-                      v-model:visible="visible1"
-                      title="添加标签"
-                      @ok="handleOk1"
-                      ok-text="确认"
-                      cancel-text="取消"
-                    >
-                      <div class="tag">
-                        <div class="system-tag">
-                          <div>系统标签：</div>
-                          <div>
-                            <span
-                              v-for="(tag, index) in systemTags"
-                              :key="index"
-                            >
+              //操作
+              <template #actions="{ record }">
+                <a-dropdown>
+                  <div class="ant-dropdown-link dot" @click.prevent>...</div>
+                  <template #overlay>
+                    <a-menu>
+                      <a-menu-item key="0">
+                        <a
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          href="http://www.alipay.com/"
+                        >
+                          <i class="icon iconfont icon-fenxiang1"></i>
+                          分享
+                        </a>
+                      </a-menu-item>
+                      <a-menu-item key="1">
+                        <a
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          href="http://www.taobao.com/"
+                        >
+                          <i class="icon iconfont icon-xiezuo_huaban1"></i>
+                          协作
+                        </a>
+                      </a-menu-item>
+                      <a-menu-item key="2">
+                        <a
+                          rel="noopener noreferrer"
+                          @click="showModal1(record)"
+                        >
+                          <i class="icon iconfont icon-tianjiabiaoqian"></i>
+                          添加标签
+                        </a>
+                        <a-modal
+                          v-model:visible="visible1"
+                          title="添加标签"
+                          @ok="handleOk1"
+                          ok-text="确认"
+                          cancel-text="取消"
+                        >
+                          <div class="tag">
+                            <div class="system-tag">
+                              <div>系统标签：</div>
+                              <div>
+                                <span
+                                  v-for="(tag, index) in systemTags"
+                                  :key="index"
+                                >
+                                  <a-tag
+                                    :key="tag.key"
+                                    :closable="false"
+                                    @close="handleClose(tag)"
+                                    @click="handleTagClick1(tag)"
+                                    :color="tag.isClick ? 'cyan' : ''"
+                                  >
+                                    {{ tag.name }}
+                                  </a-tag>
+                                </span>
+                              </div>
+                            </div>
+                            <div class="">自定义标签：</div>
+                            <span v-for="(tag, index) in tags" :key="index">
                               <a-tag
                                 :key="tag.key"
-                                :closable="false"
+                                :closable="true"
                                 @close="handleClose(tag)"
-                                @click="handleTagClick1(tag)"
+                                @click="handleTagClick(tag)"
                                 :color="tag.isClick ? 'cyan' : ''"
                               >
                                 {{ tag.name }}
                               </a-tag>
                             </span>
+                            <a-input
+                              v-if="inputVisible"
+                              ref="inputRef"
+                              type="text"
+                              size="small"
+                              :style="{ width: '78px' }"
+                              v-model:value="inputValue"
+                              @blur="handleInputConfirm"
+                              @keyup.enter="handleInputConfirm"
+                            />
+                            <a-tag
+                              v-else
+                              @click="showInput"
+                              style="background: #fff; border-style: dashed"
+                              color="blue"
+                            >
+                              <plus-outlined />
+                              自定义标签
+                            </a-tag>
                           </div>
-                        </div>
-                        <div class="">自定义标签：</div>
-                        <span v-for="(tag, index) in tags" :key="index">
-                          <a-tag
-                            :key="tag.key"
-                            :closable="true"
-                            @close="handleClose(tag)"
-                            @click="handleTagClick(tag)"
-                            :color="tag.isClick ? 'cyan' : ''"
-                          >
-                            {{ tag.name }}
-                          </a-tag>
-                        </span>
-                        <a-input
-                          v-if="inputVisible"
-                          ref="inputRef"
-                          type="text"
-                          size="small"
-                          :style="{ width: '78px' }"
-                          v-model:value="inputValue"
-                          @blur="handleInputConfirm"
-                          @keyup.enter="handleInputConfirm"
-                        />
-                        <a-tag
-                          v-else
-                          @click="showInput"
-                          style="background: #fff; border-style: dashed"
-                          color="blue"
+                        </a-modal>
+                      </a-menu-item>
+                      <a-menu-item key="3">
+                        <a
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          href="http://www.taobao.com/"
                         >
-                          <plus-outlined />
-                          自定义标签
-                        </a-tag>
-                      </div>
-                    </a-modal>
-                  </a-menu-item>
-                  <a-menu-item key="3">
-                    <a
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      href="http://www.taobao.com/"
-                    >
-                      <i class="icon iconfont icon-zhongmingming"></i>
-                      重命名
-                    </a>
-                  </a-menu-item>
-                  <a-menu-item key="4">
-                    <a
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      href="http://www.taobao.com/"
-                    >
-                      <i class="icon iconfont icon-xiazai"></i>
-                      下载
-                    </a>
-                  </a-menu-item>
-                  <a-menu-item key="5">
-                    <a
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      href="http://www.taobao.com/"
-                    >
-                      <i class="icon iconfont icon-shoucang"></i>
-                      收藏
-                    </a>
-                  </a-menu-item>
-                  <a-menu-item key="6">
-                    <a rel="noopener noreferrer" @click="showModal2">
-                      <i class="icon iconfont icon-yingyong"></i>
-                      应用
-                    </a>
-                    <a-modal
-                      v-model:visible="visible2"
-                      title="应用"
-                      @ok="handleOk2"
-                      ok-text="确认"
-                      cancel-text="取消"
-                    >
-                      <div class="app">
-                        <div>
-                          <div
-                            v-for="(item, i) in applications"
-                            :key="i"
-                            class="applications"
-                          >
-                            <i :class="[icon, iconfont, item.iconname]"></i>
-                            <a :href="item.url">{{ item.name }}</a>
+                          <i class="icon iconfont icon-zhongmingming"></i>
+                          重命名
+                        </a>
+                      </a-menu-item>
+                      <a-menu-item key="4">
+                        <a
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          href="http://www.taobao.com/"
+                        >
+                          <i class="icon iconfont icon-xiazai"></i>
+                          下载
+                        </a>
+                      </a-menu-item>
+                      <a-menu-item key="5">
+                        <a
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          href="http://www.taobao.com/"
+                        >
+                          <i class="icon iconfont icon-shoucang"></i>
+                          收藏
+                        </a>
+                      </a-menu-item>
+                      <a-menu-item key="6">
+                        <a rel="noopener noreferrer" @click="showModal2">
+                          <i class="icon iconfont icon-yingyong"></i>
+                          应用
+                        </a>
+                        <a-modal
+                          v-model:visible="visible2"
+                          title="应用"
+                          @ok="handleOk2"
+                          ok-text="确认"
+                          cancel-text="取消"
+                        >
+                          <div class="app">
+                            <div>
+                              <div
+                                v-for="(item, i) in applications"
+                                :key="i"
+                                class="applications"
+                              >
+                                <i :class="[icon, iconfont, item.iconname]"></i>
+                                <a :href="item.url">{{ item.name }}</a>
+                              </div>
+                              <div>{{ appli }}</div>
+                            </div>
                           </div>
-                          <div>{{appli}}</div>
-                        </div>
-                      </div>
-                    </a-modal>
-                  </a-menu-item>
-                  <a-menu-item key="7">
-                    <a
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      href="http://www.taobao.com/"
-                    >
-                      <i
-                        class="icon iconfont icon-icon-quanju-baocuncundang"
-                      ></i>
-                      存档
-                    </a>
-                  </a-menu-item>
-                  <a-menu-item key="8">
-                    <a
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      href="http://www.taobao.com/"
-                    >
-                      <i class="icon iconfont icon-delete"></i>
-                      删除
-                    </a>
-                  </a-menu-item>
-                </a-menu>
+                        </a-modal>
+                      </a-menu-item>
+                      <a-menu-item key="7">
+                        <a
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          href="http://www.taobao.com/"
+                        >
+                          <i
+                            class="icon iconfont icon-icon-quanju-baocuncundang"
+                          ></i>
+                          存档
+                        </a>
+                      </a-menu-item>
+                      <a-menu-item key="8">
+                        <a
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          href="http://www.taobao.com/"
+                        >
+                          <i class="icon iconfont icon-delete"></i>
+                          删除
+                        </a>
+                      </a-menu-item>
+                    </a-menu>
+                  </template>
+                </a-dropdown>
               </template>
-            </a-dropdown>
-          </template>
-        </a-table>
-      </div>
-
-      <div v-else>
-        <div class="document">
-          
-          <div v-for="(item, i) in data" :key="i">
-            <router-link to="/filedetail" >
-            <!-- <img src="../assets/document.png" alt=""> -->
-            <img :src="item.imageurl" alt="图片" />
-            <a-tooltip placement="bottom" color='#2db7f5'>
-              <template #title>
-                <span>{{ item.name }}</span>
-              </template>
-              <div class="document-div">{{ item.name }}</div>
-            </a-tooltip>
-            </router-link>
+            </a-table>
           </div>
-          
+
+          <div v-else>
+            <div class="document">
+              <div v-for="(item, i) in data" :key="i">
+                <router-link to="/filedetail">
+                  <!-- <img src="../assets/document.png" alt=""> -->
+                  <img :src="item.imageurl" alt="图片" />
+                  <a-tooltip placement="bottom" color="#2db7f5">
+                    <template #title>
+                      <span>{{ item.name }}</span>
+                    </template>
+                    <div class="document-div">{{ item.name }}</div>
+                  </a-tooltip>
+                </router-link>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    
-     
     </div>
   </div>
-</div>
-    </div>
 </template>
 
 <script>
-import { FileOutlined,SearchOutlined } from "@ant-design/icons-vue";
+import { FileOutlined, SearchOutlined } from "@ant-design/icons-vue";
 import { PlusOutlined } from "@ant-design/icons-vue";
 // import api from "../api";
 import calldps from "../../api/calldps";
@@ -399,16 +452,13 @@ export default defineComponent({
   components: {
     FileOutlined,
     PlusOutlined,
-     SearchOutlined,
+    SearchOutlined,
   },
   setup() {
     // calldps('p111').then((res)=>{
     //   console.log(res)
-
-    
     // });
 
-    
     //定义变量
     const state = reactive({
       selectedRowKeys: [], // Check here to configure the default column
@@ -449,7 +499,7 @@ export default defineComponent({
       view: true,
       icon: "icon",
       iconfont: "iconfont",
-      appli:'',
+      appli: "",
 
       // iconname:ref('icon-0-57')
     });
@@ -457,10 +507,10 @@ export default defineComponent({
     const inputRef = ref();
 
     //删除选中的文件
-    const del=()=>{
+    const del = () => {
       //发起删除请求
-      console.log('删除');
-    }
+      console.log("删除");
+    };
 
     //清除标签
     const handleClose = (removedTag) => {
@@ -553,22 +603,22 @@ export default defineComponent({
         key: "size",
         slots: { customRender: "size" },
       },
-    //   {
-    //     title: "状态",
-    //     // dataIndex: "actions",
-    //     key: "state",
-    //     slots: { customRender: "state" },
-    //   },
+      //   {
+      //     title: "状态",
+      //     // dataIndex: "actions",
+      //     key: "state",
+      //     slots: { customRender: "state" },
+      //   },
       {
         title: "浏览次数",
         key: "see",
         slots: { customRender: "see" },
       },
-    //   {
-    //     title: "编辑次数",
-    //     key: "download",
-    //     slots: { customRender: "download" },
-    //   },
+      //   {
+      //     title: "编辑次数",
+      //     key: "download",
+      //     slots: { customRender: "download" },
+      //   },
       {
         title: "最后修改时间",
         key: "seeTime",
@@ -706,7 +756,7 @@ export default defineComponent({
 
     const showModal = () => {
       visible.value = true;
-      console.log('MODAL');
+      console.log("MODAL");
     };
     let selectTag = {};
     let selectID = "";
@@ -740,11 +790,11 @@ export default defineComponent({
       visible1.value = true;
     };
     const showModal2 = () => {
-      calldps('p111').then((res)=>{
-      console.log(res)
-      state.appli=res
-      console.log(state.appli);
-    });
+      calldps("p111").then((res) => {
+        console.log(res);
+        state.appli = res;
+        console.log(state.appli);
+      });
       visible2.value = true;
     };
     const handleOk = (e) => {
@@ -822,8 +872,6 @@ export default defineComponent({
       data.value[key].icon = !data.value[key].icon;
     };
 
-
-
     const hasSelected = computed(() => state.selectedRowKeys.length > 0);
 
     const start = () => {
@@ -868,6 +916,7 @@ export default defineComponent({
       handleTagClick1,
       changeView,
       del,
+      userName: ref(""),
     };
   },
 });
@@ -882,14 +931,13 @@ export default defineComponent({
   width: 100px;
   height: 20px;
 }
-.recently  {
+.recently {
   font-family: "微软雅黑 Bold", "微软雅黑 Regular", "微软雅黑";
   font-weight: 700;
   font-style: normal;
   font-size: 14px;
   color: #464c5b;
-display: flex;
-
+  display: flex;
 }
 .head-con {
   padding: 20px 18px 0px 18px;
@@ -1002,17 +1050,73 @@ display: flex;
   white-space: nowrap;
   margin-bottom: 20px;
 }
-.active{
-    color: blue;
+.active {
+  color: blue;
 }
-.left-con{
-    border: 1px solid palevioletred;
-    flex:1;
-    margin: 10px;
+.left-con {
+  /* border: 1px solid palevioletred; */
+  flex: 1;
+  /* margin: 10px; */
+
+  border-right: 1px solid #f0f2f5;
 }
-.right-con{
-    margin: 10px;
-    border: 1px solid paleturquoise;
-    flex:3;
+.right-con {
+
+  flex: 4;
+  border-left: 1px solid #f0f2f5;
+}
+.input {
+  width: 300px;
+  height: 40px;
+  border-radius: 20px;
+  margin: 30px 30px 0px 10px;
+  background-color: #f0f2f5;
+}
+.up {
+ 
+  margin-bottom: 20px;
+  padding: 10px;
+}
+
+/* .down {
+  border-right: 1px solid #f0f2f5;
+} */
+.circlename {
+  width: 100%;
+  height: 80px;
+  border-bottom: 1px solid #f0f2f5;
+  display: flex;
+  align-items: center;
+}
+/deep/ .ant-input{
+  background-color: #f0f2f5;
+}
+.shareman {
+  width: 50px;
+  height: 50px;
+  background-color: paleturquoise;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 50px;
+  border: 1px solid salmon;
+  border-radius: 50%;
+  margin-right:10px;
+  text-align: center;
+}
+.jia{
+  font-size: 30px;
+  font-weight: 700;
+  width: 50px;
+  height: 50px;
+  border: 1px solid salmon;
+  border-radius: 50%;
+  line-height: 50px;
+  text-align: center;
+  background-color: paleturquoise;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
 }
 </style>
