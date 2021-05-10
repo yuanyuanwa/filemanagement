@@ -51,6 +51,7 @@
 
 <script>
 import list from "../component/list";
+import moment from "moment"
 // import url from "../../serviceAPI.config";
 import { defineComponent, reactive, toRefs } from "vue";
 import calldps from "../../api/calldps";
@@ -67,11 +68,14 @@ export default defineComponent({
     //在上传文件前获取文件名称
     const beforeUpload = (file, FileItem) => {
       console.log("file.name", file.name);
+      let timer=moment().format("YYYY_MM_DD_HH_mm_ss")
+      console.log(11111);
+      console.log("timer",timer);
+
       state.uploadurl =
         "/mda/madata/view/mxp?op=mr_attach&cmd=ah_upload&filename=" +
         file.name +
-        "&attach_id=" +
-        Date.parse(new Date());
+        "&attach_id=" +timer;
       console.log(state.uploadurl);
     };
     //文件上传成功后刷新列表
@@ -82,7 +86,9 @@ export default defineComponent({
       }
       //在文件上传成功后发起请求
       if (info.file.status === "done") {
+
         console.log(info.file.response.md5);
+        console.log(info.file.response);
         calldps('p111').then((res)=>{
         console.log(res)
         // message.success(`${info.file.name} file uploaded successfully`);
