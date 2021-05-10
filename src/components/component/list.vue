@@ -45,8 +45,7 @@
     </div>
 
     <div class="content">
-      
-        <div v-if="view" @click="del">
+      <div v-if="view" @click="del">
         <a-table
           :row-selection="{
             selectedRowKeys: selectedRowKeys,
@@ -56,17 +55,15 @@
           :columns="columns"
         >
           <template #name="scope">
-            <div
-              style="display: flex; justify-content: space-between"
-            >
+            <div style="display: flex; justify-content: space-between">
               <div style="word-break: break-all; width: 300px">
                 <FileOutlined />
-                <router-link to="/filedetail" >
-                <span>{{ scope.text }}</span>
+                <router-link to="/filedetail">
+                  <span>{{ scope.text }}</span>
                 </router-link>
                 <span v-for="tag in scope.record.tags" :key="tag">
                   <a-tag
-                    v-if="tag.isClick || tag.isSystemTag"
+                    v-if="tag.isClick"
                     :key="tag"
                     :color="tag.color"
                   >
@@ -269,7 +266,7 @@
                             <i :class="[icon, iconfont, item.iconname]"></i>
                             <a :href="item.url">{{ item.name }}</a>
                           </div>
-                          <div>{{appli}}</div>
+                          <div>{{ appli }}</div>
                         </div>
                       </div>
                     </a-modal>
@@ -305,24 +302,20 @@
 
       <div v-else>
         <div class="document">
-          
           <div v-for="(item, i) in data" :key="i">
-            <router-link to="/filedetail" >
-            <!-- <img src="../assets/document.png" alt=""> -->
-            <img :src="item.imageurl" alt="图片" />
-            <a-tooltip placement="bottom" color='#2db7f5'>
-              <template #title>
-                <span>{{ item.name }}</span>
-              </template>
-              <div class="document-div">{{ item.name }}</div>
-            </a-tooltip>
+            <router-link to="/filedetail">
+              <!-- <img src="../assets/document.png" alt=""> -->
+              <img :src="item.imageurl" alt="图片" />
+              <a-tooltip placement="bottom" color="#2db7f5">
+                <template #title>
+                  <span>{{ item.name }}</span>
+                </template>
+                <div class="document-div">{{ item.name }}</div>
+              </a-tooltip>
             </router-link>
           </div>
-          
         </div>
       </div>
-    
-     
     </div>
   </div>
 </template>
@@ -351,10 +344,8 @@ export default defineComponent({
     // calldps('p111').then((res)=>{
     //   console.log(res)
 
-    
     // });
 
-    
     //定义变量
     const state = reactive({
       selectedRowKeys: [], // Check here to configure the default column
@@ -407,17 +398,17 @@ export default defineComponent({
       view: true,
       icon: "icon",
       iconfont: "iconfont",
-      appli:''
+      appli: "",
       // iconname:ref('icon-0-57')
     });
 
     const inputRef = ref();
 
     //删除选中的文件
-    const del=()=>{
+    const del = () => {
       //发起删除请求
-      console.log('删除');
-    }
+      console.log("删除");
+    };
 
     //清除标签
     const handleClose = (removedTag) => {
@@ -439,12 +430,13 @@ export default defineComponent({
     //系统标签选中和不选中
     const handleTagClick1 = (tag) => {
       console.log(tag);
-      // let tags = state.systemTags;
-      // tags.map((item) => {
-      //   if (item.name === tag.name) {
-      //     item.isClick = !tag.isClick;
-      //   }
-      // });
+
+      let tags = state.systemTags;
+      tags.map((item) => {
+        if (item.name === tag.name) {
+          item.isClick = !tag.isClick;
+        }
+      });
     };
     //自定义标签选中和不选中
     const handleTagClick = (tag) => {
@@ -553,13 +545,13 @@ export default defineComponent({
             key: "科学城",
             color: "orange",
             isSystemTag: true,
-            isClick: true,
+            isClick: false,
           },
           {
             key: "科学城1",
             color: "orange",
             isSystemTag: true,
-            isClick: true,
+            isClick: false,
           },
           {
             key: "工程文件",
@@ -720,7 +712,7 @@ export default defineComponent({
 
     const showModal = () => {
       visible.value = true;
-      console.log('MODAL');
+      console.log("MODAL");
     };
     let selectTag = {};
     let selectID = "";
@@ -734,7 +726,7 @@ export default defineComponent({
           return {
             key: index,
             name: item.key,
-            isClick: true,
+            isClick: item.isClick,
             isSystemTag: item.isSystemTag,
           };
         });
@@ -776,11 +768,11 @@ export default defineComponent({
       visible1.value = true;
     };
     const showModal2 = () => {
-      calldps('p111').then((res)=>{
-      console.log(res)
-      state.appli=res
-      console.log(state.appli);
-    });
+      calldps("p111").then((res) => {
+        console.log(res);
+        state.appli = res;
+        console.log(state.appli);
+      });
       visible2.value = true;
     };
     const handleOk = (e) => {
@@ -858,8 +850,6 @@ export default defineComponent({
       data.value[key].icon = !data.value[key].icon;
     };
 
-
-
     const hasSelected = computed(() => state.selectedRowKeys.length > 0);
 
     const start = () => {
@@ -903,7 +893,7 @@ export default defineComponent({
       inputRef,
       handleTagClick1,
       changeView,
-      del
+      del,
     };
   },
 });
