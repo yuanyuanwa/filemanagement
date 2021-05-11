@@ -231,7 +231,6 @@
                               <a-tag
                                 :key="tag.key"
                                 :closable="false"
-                               
                                 @click="handleTagClick1(tag)"
                                 :color="tag.isClick ? 'cyan' : ''"
                               >
@@ -245,7 +244,7 @@
                           <a-tag
                             :key="tag.key"
                             :closable="true"
-                            @close="handleClose(tag,record)"
+                            @close="handleClose(tag, record)"
                             @click="handleTagClick(tag)"
                             :color="tag.isClick ? 'cyan' : ''"
                           >
@@ -386,7 +385,8 @@ import { PlusOutlined } from "@ant-design/icons-vue";
 import moment from "moment";
 // import api from "../api";
 import calldps from "../../api/calldps";
-
+import URL from "../../api/url";
+// import  {loadTableData}  from "../../api/index";
 import {
   defineComponent,
   ref,
@@ -394,7 +394,7 @@ import {
   reactive,
   toRefs,
   nextTick,
-  onMounted
+  onMounted,
 } from "vue";
 // import { ColumnProps } from 'ant-design-vue/es/table/interface';
 
@@ -469,18 +469,18 @@ export default defineComponent({
 
     let data = ref();
     onMounted(() => {
-      loadTable()
-      
-    })
-    
+      loadTable();
+    });
+
     const loadTable = () => {
-      calldps("file_manager/get_myfile", {
+
+      calldps(URL.common.list, {
         owener: "小明",
       }).then((res) => {
         // console.log(listMenu);
         console.log("刷新列表", res);
         console.log(data);
-        let newList = res[0];
+        // let newList = res[0];
         // let a=item.labels.split("|");
         data.value = res.map((item, index) => {
           return {
@@ -556,7 +556,7 @@ export default defineComponent({
           // message.success(`${info.file.name} file uploaded successfully`);
 
           //传递信息成功后刷新列表
-          loadTable()
+          loadTable();
           // calldps("file_manager/get_myfile", {
           //   owener: "小明",
           // }).then((res) => {
@@ -580,13 +580,11 @@ export default defineComponent({
     };
 
     //清除标签
-    const handleClose = (removedTag,record) => {
+    const handleClose = (removedTag, record) => {
       calldps("file_manager/delete_file", {
-      id: record.id,
-      fid:record.fid
-      }).then((res) => {
-        
-      });
+        id: record.id,
+        fid: record.fid,
+      }).then((res) => {});
       //removedTag：要清除的标签
 
       console.log(1, removedTag);
