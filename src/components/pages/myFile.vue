@@ -66,34 +66,27 @@ export default defineComponent({
       size: "", //上传文件大小
     });
     
-    let listMenu=ref( [
-          {
-            key: "系统标签1",
-            color: "orange",
-            isSystemTag: true,
-          },
-          {
-            key: "系统标签1",
-            color: "orange",
-            isSystemTag: true,
-          },
-          {
-            key: "系统标签1",
-            color: "orange",
-            isSystemTag: true,
-          },])
+    let listMenu=[]
 
-          // watch(listMenu,(oldval,newval)=>{
-          //   console.log('old',oldval),
-          //     console.log('new',newval);
-          // })
-          // listMenu.value='111111'
     calldps("file_manager/get_myfile", {
       // file_manager/get_myfile
         owener: '小明',
       }).then((res) => {
             console.log("刷新列表", res);
-            listMenu.value=res
+            listMenu=[
+      {
+        name : '总部',
+        isActive : true
+      },
+      {
+        name : '地球',
+        isActive : false
+      },
+      {
+        name : '火星',
+        isActive : false
+      }     
+    ]
             console.log(66666666666666,listMenu);
           });
     calldps("p111", {

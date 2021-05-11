@@ -337,7 +337,7 @@ export default defineComponent({
   },
   props:{
     listMenu: { // 菜单数据
-            
+      type: Object,
             required: true,
             default(){
                 return []
@@ -346,8 +346,7 @@ export default defineComponent({
   },
   setup(props) {
     console.log(111);
-    let listMenu = props.listMenu
-    console.log(1010010101010,props,props.listMenu.value);
+    console.log(1010010101010,props);
     console.log(10,props.listMenu);
     console.log(3333333333333,props.listMenu[0]);
     //定义变量

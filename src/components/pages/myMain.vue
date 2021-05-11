@@ -101,12 +101,12 @@
         >
           <template #name="scope">
             <div style="display: flex; justify-content: space-between">
-              <div style="word-break: break-all; width: 300px">
+              <div style="word-break: break-all;width:100px">
                 <FileOutlined />
                 <router-link to="/filedetail">
                   <span>{{ scope.text }}</span>
                 </router-link>
-                <span v-for="tag in scope.record.tags" :key="tag">
+                <!-- <span v-for="tag in scope.record.tags" :key="tag">
                   <a-tag
                     v-if="tag.isClick || tag.isSystemTag"
                     :key="tag"
@@ -114,7 +114,7 @@
                   >
                     {{ tag.key }}
                   </a-tag>
-                </span>
+                </span> -->
               </div>
               <div @click="handleStarChange(scope.record.key)">
                 <div v-if="scope.record.icon">
@@ -144,6 +144,18 @@
             <span>
               {{ record.isFiled }}
             </span>
+          </template>
+
+          <template #tags="{ record }">
+             <span v-for="tag in record.tags" :key="tag">
+                  <a-tag
+                    v-if="tag.isClick || tag.isSystemTag"
+                    :key="tag"
+                    :color="tag.color"
+                  >
+                    {{ tag.key }}
+                  </a-tag>
+                </span>
           </template>
 
           //浏览次数
@@ -469,32 +481,40 @@ export default defineComponent({
           isFiled: "已归档",
           seeTime: item.modify_time,
           _id: index,
-          tags: [
+          tags:[
             {
-              key: "科学城",
-              color: "orange",
-              isSystemTag: true,
-              isClick: false,
+               key: item.labels,
+               color: "orange",
+               isSystemTag: true,
+               isClick: false,
             },
-            {
-              key: "科学城1",
-              color: "orange",
-              isSystemTag: true,
-              isClick: false,
-            },
-            {
-              key: "工程文件",
-              color: "orange",
-              isSystemTag: false,
-              isClick: true,
-            },
-            {
-              key: "项目文件2",
-              color: "orange",
-              isSystemTag: false,
-              isClick: false,
-            },
-          ],
+        ],
+          // tags: [
+          //   {
+          //     key: "科学城",
+          //     color: "orange",
+          //     isSystemTag: true,
+          //     isClick: false,
+          //   },
+          //   {
+          //     key: "科学城1",
+          //     color: "orange",
+          //     isSystemTag: true,
+          //     isClick: false,
+          //   },
+          //   {
+          //     key: "工程文件",
+          //     color: "orange",
+          //     isSystemTag: false,
+          //     isClick: true,
+          //   },
+          //   {
+          //     key: "项目文件2",
+          //     color: "orange",
+          //     isSystemTag: false,
+          //     isClick: false,
+          //   },
+          // ],
           action: "...",
           icon: false,
           width: 400,
@@ -659,6 +679,12 @@ export default defineComponent({
         slots: { customRender: "state" },
       },
       {
+        title: "标签",
+        // dataIndex: "actions",
+        key: "tags",
+        slots: { customRender: "tags" },
+      },
+      {
         title: "浏览次数",
         key: "see",
         slots: { customRender: "see" },
@@ -688,6 +714,12 @@ export default defineComponent({
     let selectTag = {};
     let selectID = "";
     const showModal1 = (record) => {
+      calldps("file_manager/get_mylabels", {
+            author: "小明",
+          }).then((res) => {
+            // console.log(listMenu);
+            console.log("获取系统标签", res);
+          });
       console.log(record);
       selectID = record._id;
       // 这是系统标签

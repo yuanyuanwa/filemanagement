@@ -73,7 +73,7 @@ const routes = [
   {
     path: "/ab",
     name: "ab",
-    component: () => import( "../components/content/b.vue"),
+    component: () => import( "../components/content/index.vue"),
   },
   {
     path: "/filedetail",

@@ -24,7 +24,7 @@ export default defineComponent({
     },
     setup(props, context){
         // const listMenu = props.listMenu
-        console.log(11,props);
+        console.log(11,props.listMenu[0].name);
         // function menuClick (menuName) {
         //     // 通过自定义事件回传值
         //     context.emit('menuClick', { menuName })
