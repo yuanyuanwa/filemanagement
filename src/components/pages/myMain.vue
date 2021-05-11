@@ -101,7 +101,7 @@
         >
           <template #name="scope">
             <div style="display: flex; justify-content: space-between">
-              <div style="word-break: break-all;width:100px">
+              <div style="word-break: break-all; width: 100px">
                 <FileOutlined />
                 <router-link to="/filedetail">
                   <span>{{ scope.text }}</span>
@@ -147,15 +147,18 @@
           </template>
 
           <template #tags="{ record }">
-             <span v-for="tag in record.tags" :key="tag">
-                  <a-tag
-                    v-if="tag.isClick || tag.isSystemTag"
-                    :key="tag"
-                    :color="tag.color"
-                  >
-                    {{ tag.key }}
-                  </a-tag>
-                </span>
+            <span v-if="record.tags.length > 0">
+              <span v-for="tag in record.tags" :key="tag">
+                <a-tag
+                  v-if="tag.isClick || tag.isSystemTag"
+                  :key="tag"
+                  :color="tag.color"
+                >
+                  {{ tag.key }}
+                </a-tag>
+              </span>
+            </span>
+            <span v-else>-</span>
           </template>
 
           //浏览次数
@@ -228,7 +231,7 @@
                               <a-tag
                                 :key="tag.key"
                                 :closable="false"
-                                @close="handleClose(tag)"
+                               
                                 @click="handleTagClick1(tag)"
                                 :color="tag.isClick ? 'cyan' : ''"
                               >
@@ -242,7 +245,7 @@
                           <a-tag
                             :key="tag.key"
                             :closable="true"
-                            @close="handleClose(tag)"
+                            @close="handleClose(tag,record)"
                             @click="handleTagClick(tag)"
                             :color="tag.isClick ? 'cyan' : ''"
                           >
@@ -391,6 +394,7 @@ import {
   reactive,
   toRefs,
   nextTick,
+  onMounted
 } from "vue";
 // import { ColumnProps } from 'ant-design-vue/es/table/interface';
 
@@ -462,67 +466,61 @@ export default defineComponent({
       size: "", //上传文件大小
       // iconname:ref('icon-0-57')
     });
-    let data = ref();
 
-    calldps("file_manager/get_myfile", {
-      owener: "小明",
-    }).then((res) => {
-      // console.log(listMenu);
-      console.log("刷新列表", res);
-      console.log(data);
-      let newList = res[0];
-      data.value = res.map((item, index) => {
-        return {
-          key: index,
-          fid: item.fid,
-          name: item.fname,
-          age: 32,
-          size: item.size,
-          isFiled: "已归档",
-          seeTime: item.modify_time,
-          _id: index,
-          tags:[
-            {
-               key: item.labels,
-               color: "orange",
-               isSystemTag: true,
-               isClick: false,
-            },
-        ],
-          // tags: [
-          //   {
-          //     key: "科学城",
-          //     color: "orange",
-          //     isSystemTag: true,
-          //     isClick: false,
-          //   },
-          //   {
-          //     key: "科学城1",
-          //     color: "orange",
-          //     isSystemTag: true,
-          //     isClick: false,
-          //   },
-          //   {
-          //     key: "工程文件",
-          //     color: "orange",
-          //     isSystemTag: false,
-          //     isClick: true,
-          //   },
-          //   {
-          //     key: "项目文件2",
-          //     color: "orange",
-          //     isSystemTag: false,
-          //     isClick: false,
-          //   },
-          // ],
-          action: "...",
-          icon: false,
-          width: 400,
-          imageurl: require("../../assets/document.png"),
-        };
+    let data = ref();
+    onMounted(() => {
+      loadTable()
+      
+    })
+    
+    const loadTable = () => {
+      calldps("file_manager/get_myfile", {
+        owener: "小明",
+      }).then((res) => {
+        // console.log(listMenu);
+        console.log("刷新列表", res);
+        console.log(data);
+        let newList = res[0];
+        // let a=item.labels.split("|");
+        data.value = res.map((item, index) => {
+          return {
+            key: index,
+            fid: item.fid,
+            name: item.fname,
+            age: 32,
+            size: item.size,
+            isFiled: "已归档",
+            seeTime: item.modify_time,
+            _id: index,
+            //   tags:[
+            //     {
+            //        key: item.labels,
+            //        color: "orange",
+            //        isSystemTag: true,
+            //        isClick: false,
+            //     },
+            // ],
+            tags: item.labels
+              ? item.labels.split("|").map((item) => {
+                  return {
+                    key: item,
+                    color: "orange",
+                    isSystemTag: true,
+                    isClick: false,
+                  };
+                })
+              : [],
+
+            action: "...",
+            icon: false,
+            width: 400,
+            imageurl: require("../../assets/document.png"),
+          };
+        });
+        console.log(7, data);
       });
-      console.log(7, data);
-    });
+    };
+
     //在上传文件前获取文件名称
     const beforeUpload = (file, FileItem) => {
       console.log(file);
@@ -558,15 +556,16 @@ export default defineComponent({
           // message.success(`${info.file.name} file uploaded successfully`);
 
           //传递信息成功后刷新列表
-          calldps("file_manager/get_myfile", {
-            owener: "小明",
-          }).then((res) => {
-            // console.log(listMenu);
-            console.log("刷新列表", res);
-            console.log(data);
-            let newList = res[0];
-            console.log(66666666666666, newList);
-          });
+          loadTable()
+          // calldps("file_manager/get_myfile", {
+          //   owener: "小明",
+          // }).then((res) => {
+          //   // console.log(listMenu);
+          //   console.log("刷新列表", res);
+          //   console.log(data);
+          //   let newList = res[0];
+          //   console.log(66666666666666, newList);
+          // });
         });
       } else if (info.file.status === "error") {
         // message.error(`${info.file.name} file upload failed.`);
@@ -581,8 +580,15 @@ export default defineComponent({
     };
 
     //清除标签
-    const handleClose = (removedTag) => {
+    const handleClose = (removedTag,record) => {
+      calldps("file_manager/delete_file", {
+      id: record.id,
+      fid:record.fid
+      }).then((res) => {
+        
+      });
       //removedTag：要清除的标签
+
       console.log(1, removedTag);
       const tags = state.tags.filter((tag) => tag !== removedTag);
       console.log(tags);
@@ -714,25 +720,56 @@ export default defineComponent({
     let selectTag = {};
     let selectID = "";
     const showModal1 = (record) => {
+      console.log("record", record);
+      let currentTags = [];
+      try {
+        currentTags = record.tags.map((item) => {
+          return item.key;
+        });
+      } catch (e) {
+        console.log(e);
+      }
       calldps("file_manager/get_mylabels", {
-            author: "小明",
-          }).then((res) => {
-            // console.log(listMenu);
-            console.log("获取系统标签", res);
-          });
+        author: "小明",
+      }).then((res) => {
+        // console.log(listMenu);
+        console.log("获取系统标签", res);
+        if (res && res.length > 0) {
+          try {
+            let data = res[0];
+            state.systemTags = data.sys_labels.map((item) => {
+              let isClick = currentTags.includes(item.name);
+              return {
+                key: item.id,
+                name: item.name,
+                isClick,
+              };
+            });
+            state.tags = data.user_labels.map((item) => {
+              return {
+                key: item.id,
+                name: item.name,
+                isClick: currentTags.includes(item.name),
+              };
+            });
+          } catch (e) {
+            console.log(e);
+          }
+        }
+      });
       console.log(record);
       selectID = record._id;
       // 这是系统标签
-      state.systemTags = record.tags
-        .filter((v) => v.isSystemTag)
-        .map((item, index) => {
-          return {
-            key: index,
-            name: item.key,
-            isClick: item.isClick,
-            isSystemTag: item.isSystemTag,
-          };
-        });
+      // state.systemTags = record.tags
+      //   .filter((v) => v.isSystemTag)
+      //   .map((item, index) => {
+      //     return {
+      //       key: index,
+      //       name: item.key,
+      //       isClick: item.isClick,
+      //       isSystemTag: item.isSystemTag,
+      //     };
+      //   });
       // 自定义标签
       state.tags = record.tags
         .filter((v) => !v.isSystemTag)
