@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="head-con">
-      <div></div>
+      <!-- <div>111111111{{listMenu}}</div> -->
       <div>
         <a-dropdown>
           <a-button @click.prevent type="primary" class="upload">
@@ -45,68 +45,117 @@
         </a-dropdown>
       </div>
     </div>
-    <listcon></listcon>
+    <listcon :listMenu="listMenu"></listcon>
   </div>
 </template>
 
 <script>
 import list from "../component/list";
-import moment from "moment"
+import moment from "moment";
 // import url from "../../serviceAPI.config";
-import { defineComponent, reactive, toRefs } from "vue";
+import { defineComponent, reactive, ref, toRefs,watch} from "vue";
 import calldps from "../../api/calldps";
 export default defineComponent({
   components: {
     listcon: list,
-    // url,
   },
-  setup() {
+  setup() { 
+    console.log(123);
     const state = reactive({
-      uploadurl:
-        "/mda/madata/view/mxp?op=mr_attach&cmd=ah_upload&filename=55555555&attach_id=77777",
+      uploadurl: "",
+      size: "", //上传文件大小
     });
+    
+    let listMenu=ref( [
+          {
+            key: "系统标签1",
+            color: "orange",
+            isSystemTag: true,
+          },
+          {
+            key: "系统标签1",
+            color: "orange",
+            isSystemTag: true,
+          },
+          {
+            key: "系统标签1",
+            color: "orange",
+            isSystemTag: true,
+          },])
+
+          // watch(listMenu,(oldval,newval)=>{
+          //   console.log('old',oldval),
+          //     console.log('new',newval);
+          // })
+          // listMenu.value='111111'
+    calldps("file_manager/get_myfile", {
+      // file_manager/get_myfile
+        owener: '小明',
+      }).then((res) => {
+            console.log("刷新列表", res);
+            listMenu.value=res
+            console.log(66666666666666,listMenu);
+          });
+    calldps("p111", {
+      // file_manager/get_myfile
+        // owener: '小明',
+      }).then((res) => {
+          console.log(677777777,listMenu);
+          });
+
     //在上传文件前获取文件名称
     const beforeUpload = (file, FileItem) => {
-      console.log("file.name", file.name);
-      let timer=moment().format("YYYY_MM_DD_HH_mm_ss")
-      console.log(11111);
-      console.log("timer",timer);
-
+      console.log(file);
+      state.size = file.size;
+      let timer = moment().format("YYYY_MM_DD_HH_mm_ss");
       state.uploadurl =
         "/mda/madata/view/mxp?op=mr_attach&cmd=ah_upload&filename=" +
         file.name +
-        "&attach_id=" +timer;
+        "&attach_id=" +
+        timer;
       console.log(state.uploadurl);
     };
     //文件上传成功后刷新列表
-    const handleChange = (info) => {
-      //在文件上传成功后发起请求
-      if (info.file.status !== "uploading") {
-        console.log(info.file, info.fileList);
-      }
-      //在文件上传成功后发起请求
-      if (info.file.status === "done") {
 
-        console.log(info.file.response.md5);
-        console.log(info.file.response);
-        calldps('p111').then((res)=>{
-        console.log(res)
-        // message.success(`${info.file.name} file uploaded successfully`);
-      });
-        // console.log(info.file.response[[Target]]);
+    const handleChange = (info) => {
+      console.log(555555555555,listMenu);
+      if (info.file.status !== "uploading") {
+        // console.log(info.file, info.fileList);
+      }
+      if (info.file.status === "done") {
+        let truesize = state.size / 1000 + "KB";
+        console.log(1111111111,info.file.response);
+        //在文件上传成功后传递信息到后台
+        calldps("file_manager/file_upload", {
+          // attach_id: info.file.response.attach_id,
+          ftype: info.file.response.ext,
+          fname: info.file.response.filename,
+          fid: info.file.response.md5,
+          size: truesize,
+          owener:'小明'
+        }).then((res) => {
+          console.log(res);
+          // message.success(`${info.file.name} file uploaded successfully`);
+
+          //传递信息成功后刷新列表
+          calldps("file_manager/get_myfile", {
+        owener: '小明',
+      }).then((res) => {
+        console.log(listMenu);
+            console.log("刷新列表", res);
+            listMenu=res
+            console.log(66666666666666,state.dd);
+          });
+        });
       } else if (info.file.status === "error") {
         // message.error(`${info.file.name} file upload failed.`);
       }
-      // if(info.file.status==='done'){
-      //   calldps('p111').then((res)=>{
-      //   console.log(res)
-      // });
-      //   }
     };
     return {
       ...toRefs(state),
       beforeUpload, //在上传文件前获取文件名称
-      handleChange, //文件上传成功后刷新列表
+      handleChange, //文件上传成功后传递信息到后台、刷新列表
+      listMenu
     };
   },
 });

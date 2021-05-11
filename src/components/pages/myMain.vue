@@ -12,7 +12,9 @@
               <a-menu>
                 <a-menu-item>
                   <a-upload
-                    action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                    :action="uploadurl"
+                    :beforeUpload="beforeUpload"
+                    @change="handleChange"
                   >
                     <a href="javascript:;">上传文件</a>
                   </a-upload>
@@ -88,8 +90,7 @@
     </div>
 
     <div class="content">
-      
-        <div v-if="view" @click="del">
+      <div v-if="view" @click="del">
         <a-table
           :row-selection="{
             selectedRowKeys: selectedRowKeys,
@@ -99,13 +100,11 @@
           :columns="columns"
         >
           <template #name="scope">
-            <div
-              style="display: flex; justify-content: space-between"
-            >
+            <div style="display: flex; justify-content: space-between">
               <div style="word-break: break-all; width: 300px">
                 <FileOutlined />
-                <router-link to="/filedetail" >
-                <span>{{ scope.text }}</span>
+                <router-link to="/filedetail">
+                  <span>{{ scope.text }}</span>
                 </router-link>
                 <span v-for="tag in scope.record.tags" :key="tag">
                   <a-tag
@@ -312,7 +311,7 @@
                             <i :class="[icon, iconfont, item.iconname]"></i>
                             <a :href="item.url">{{ item.name }}</a>
                           </div>
-                          <div>{{appli}}</div>
+                          <div>{{ appli }}</div>
                         </div>
                       </div>
                     </a-modal>
@@ -348,24 +347,20 @@
 
       <div v-else>
         <div class="document">
-          
           <div v-for="(item, i) in data" :key="i">
-            <router-link to="/filedetail" >
-            <!-- <img src="../assets/document.png" alt=""> -->
-            <img :src="item.imageurl" alt="图片" />
-            <a-tooltip placement="bottom" color='#2db7f5'>
-              <template #title>
-                <span>{{ item.name }}</span>
-              </template>
-              <div class="document-div">{{ item.name }}</div>
-            </a-tooltip>
+            <router-link to="/filedetail">
+              <!-- <img src="../assets/document.png" alt=""> -->
+              <img :src="item.imageurl" alt="图片" />
+              <a-tooltip placement="bottom" color="#2db7f5">
+                <template #title>
+                  <span>{{ item.name }}</span>
+                </template>
+                <div class="document-div">{{ item.name }}</div>
+              </a-tooltip>
             </router-link>
           </div>
-          
         </div>
       </div>
-    
-     
     </div>
   </div>
 </template>
@@ -373,8 +368,10 @@
 <script>
 import { FileOutlined } from "@ant-design/icons-vue";
 import { PlusOutlined } from "@ant-design/icons-vue";
+import moment from "moment";
 // import api from "../api";
 import calldps from "../../api/calldps";
+
 import {
   defineComponent,
   ref,
@@ -394,10 +391,8 @@ export default defineComponent({
     // calldps('p111').then((res)=>{
     //   console.log(res)
 
-    
     // });
 
-    
     //定义变量
     const state = reactive({
       selectedRowKeys: [], // Check here to configure the default column
@@ -450,17 +445,120 @@ export default defineComponent({
       view: true,
       icon: "icon",
       iconfont: "iconfont",
-      appli:''
+      appli: "",
+      uploadurl: "",
+      size: "", //上传文件大小
       // iconname:ref('icon-0-57')
     });
+    let data = ref();
 
+    calldps("file_manager/get_myfile", {
+      owener: "小明",
+    }).then((res) => {
+      // console.log(listMenu);
+      console.log("刷新列表", res);
+      console.log(data);
+      let newList = res[0];
+      data.value = res.map((item, index) => {
+        return {
+          key: index,
+          fid: item.fid,
+          name: item.fname,
+          age: 32,
+          size: item.size,
+          isFiled: "已归档",
+          seeTime: item.modify_time,
+          _id: index,
+          tags: [
+            {
+              key: "科学城",
+              color: "orange",
+              isSystemTag: true,
+              isClick: false,
+            },
+            {
+              key: "科学城1",
+              color: "orange",
+              isSystemTag: true,
+              isClick: false,
+            },
+            {
+              key: "工程文件",
+              color: "orange",
+              isSystemTag: false,
+              isClick: true,
+            },
+            {
+              key: "项目文件2",
+              color: "orange",
+              isSystemTag: false,
+              isClick: false,
+            },
+          ],
+          action: "...",
+          icon: false,
+          width: 400,
+          imageurl: require("../../assets/document.png"),
+        };
+      });
+      console.log(7, data);
+    });
+    //在上传文件前获取文件名称
+    const beforeUpload = (file, FileItem) => {
+      console.log(file);
+      state.size = file.size;
+      let timer = moment().format("YYYY_MM_DD_HH_mm_ss");
+      state.uploadurl =
+        "/mda/madata/view/mxp?op=mr_attach&cmd=ah_upload&filename=" +
+        file.name +
+        "&attach_id=" +
+        timer;
+      console.log(state.uploadurl);
+    };
+    //文件上传成功后刷新列表
+
+    const handleChange = (info) => {
+      // console.log(555555555555,listMenu);
+      if (info.file.status !== "uploading") {
+        // console.log(info.file, info.fileList);
+      }
+      if (info.file.status === "done") {
+        let truesize = state.size / 1000 + "KB";
+        console.log(1111111111, info.file.response);
+        //在文件上传成功后传递信息到后台
+        calldps("file_manager/file_upload", {
+          // attach_id: info.file.response.attach_id,
+          ftype: info.file.response.ext,
+          fname: info.file.response.filename,
+          fid: info.file.response.md5,
+          size: truesize,
+          owener: "小明",
+        }).then((res) => {
+          console.log(res);
+          // message.success(`${info.file.name} file uploaded successfully`);
+
+          //传递信息成功后刷新列表
+          calldps("file_manager/get_myfile", {
+            owener: "小明",
+          }).then((res) => {
+            // console.log(listMenu);
+            console.log("刷新列表", res);
+            console.log(data);
+            let newList = res[0];
+            console.log(66666666666666, newList);
+          });
+        });
+      } else if (info.file.status === "error") {
+        // message.error(`${info.file.name} file upload failed.`);
+      }
+    };
     const inputRef = ref();
 
     //删除选中的文件
-    const del=()=>{
+    const del = () => {
       //发起删除请求
-      console.log('删除');
-    }
+      console.log("删除");
+    };
 
     //清除标签
     const handleClose = (removedTag) => {
@@ -482,12 +580,13 @@ export default defineComponent({
     //系统标签选中和不选中
     const handleTagClick1 = (tag) => {
       console.log(tag);
-      // let tags = state.systemTags;
-      // tags.map((item) => {
-      //   if (item.name === tag.name) {
-      //     item.isClick = !tag.isClick;
-      //   }
-      // });
+
+      let tags = state.systemTags;
+      tags.map((item) => {
+        if (item.name === tag.name) {
+          item.isClick = !tag.isClick;
+        }
+      });
     };
     //自定义标签选中和不选中
     const handleTagClick = (tag) => {
@@ -581,189 +680,10 @@ export default defineComponent({
         slots: { customRender: "actions" },
       },
     ];
-    const data = ref([
-      {
-        key: "0",
-        name:
-          "云销售项目111111111111111111111111111111111111111111111111111111111111111111111",
-        age: 32,
-        size: "18KB",
-        isFiled: "已归档",
-        seeTime: "2020-05-07",
-        _id: "A12jkasf",
-        tags: [
-          {
-            key: "科学城",
-            color: "orange",
-            isSystemTag: true,
-            isClick: true,
-          },
-          {
-            key: "科学城1",
-            color: "orange",
-            isSystemTag: true,
-            isClick: true,
-          },
-          {
-            key: "工程文件",
-            color: "orange",
-            isSystemTag: false,
-            isClick: true,
-          },
-          {
-            key: "项目文件2",
-            color: "orange",
-            isSystemTag: false,
-            isClick: false,
-          },
-        ],
-        action: "...",
-        icon: false,
-        width: 400,
-        imageurl: require("../../assets/document.png"),
-      },
-      {
-        key: "1",
-        name: "Jim Green",
-        age: 42,
-        isFiled: "未归档",
-        size: "18KB",
-        seeTime: "2020-05-07",
-        _id: "NBerfghia2sf",
-
-        tags: [
-          {
-            key: "文档1",
-            color: "orange",
-            isSystemTag: true,
-          },
-          {
-            key: "图片2",
-            color: "orange",
-            isSystemTag: true,
-          },
-          {
-            key: "工程文件",
-            color: "orange",
-            isSystemTag: false,
-            isClick: true,
-          },
-          {
-            key: "项目文件2",
-            color: "orange",
-            isSystemTag: false,
-            isClick: false,
-          },
-        ],
-        action: "...",
-        icon: true,
-        imageurl: require("../../assets/document.png"),
-      },
-      {
-        key: "2",
-        name: "Green",
-        age: 42,
-        isFiled: "未归档",
-        size: "18KB",
-        seeTime: "2020-05-08",
-        _id: "NBer",
-
-        tags: [
-          {
-            key: "系统标签1",
-            color: "orange",
-            isSystemTag: true,
-          },
-          {
-            key: "系统标签2",
-            color: "orange",
-            isSystemTag: true,
-          },
-          {
-            key: "工程",
-            color: "orange",
-            isSystemTag: false,
-            isClick: true,
-          },
-          {
-            key: "项目",
-            color: "orange",
-            isSystemTag: false,
-            isClick: false,
-          },
-        ],
-        action: "...",
-        icon: true,
-        imageurl: require("../../assets/document.png"),
-      },
-      // {
-      //   key: "2",
-      //   name: "Joe Black",
-      //   age: 32,
-      //   isFiled: "未归档",
-      //   size: "18KB",
-      //   seeTime: "2020-05-07",
-      //   tags: [
-      //     {
-      //       key: "机密",
-      //       color: "red",
-      //     },
-      //     {
-      //       key: "重要",
-      //       color: "blue",
-      //     },
-      //   ],
-      //   action: "...",
-      // },
-      // {
-      //   key: "3",
-      //   name: "Joe Black",
-      //   isFiled: "未归档",
-      //   size: "18KB",
-      //   age: 32,
-      //   seeTime: "2020-05-07",
-      //   tags: [
-      //     {
-      //       key: "机密",
-      //       color: "red",
-      //     },
-      //     {
-      //       key: "重要",
-      //       color: "blue",
-      //     },
-      //   ],
-      //   action: "...",
-      // },
-      // {
-      //   key: "4",
-      //   name: "Joe Black",
-      //   isFiled: "未归档",
-      //   size: "18KB",
-      //   age: 32,
-      //   seeTime: "2020-05-07",
-      //   tags: [
-      //     {
-      //       key: "机密",
-      //       color: "red",
-      //     },
-      //     {
-      //       key: "重要",
-      //       color: "blue",
-      //     },
-      //   ],
-      //   action: "...",
-      // },
-    ]);
-    const list = [
-      { tag: "标签一" },
-      {
-        tag: "标签二",
-      },
-    ];
 
     const showModal = () => {
       visible.value = true;
-      console.log('MODAL');
+      console.log("MODAL");
     };
     let selectTag = {};
     let selectID = "";
@@ -777,7 +697,7 @@ export default defineComponent({
           return {
             key: index,
             name: item.key,
-            isClick: true,
+            isClick: item.isClick,
             isSystemTag: item.isSystemTag,
           };
         });
@@ -819,11 +739,11 @@ export default defineComponent({
       visible1.value = true;
     };
     const showModal2 = () => {
-      calldps('p111').then((res)=>{
-      console.log(res)
-      state.appli=res
-      console.log(state.appli);
-    });
+      calldps("p111").then((res) => {
+        console.log(res);
+        state.appli = res;
+        console.log(state.appli);
+      });
       visible2.value = true;
     };
     const handleOk = (e) => {
@@ -901,8 +821,6 @@ export default defineComponent({
       data.value[key].icon = !data.value[key].icon;
     };
 
-
-
     const hasSelected = computed(() => state.selectedRowKeys.length > 0);
 
     const start = () => {
@@ -937,7 +855,7 @@ export default defineComponent({
       onSelectChange,
       handleStarChange,
       value: ref([]),
-      list,
+      // list,
       creatTag,
       handleClose,
       showInput,
@@ -946,7 +864,9 @@ export default defineComponent({
       inputRef,
       handleTagClick1,
       changeView,
-      del
+      del,
+      beforeUpload, //在上传文件前获取文件名称
+      handleChange, //文件上传成功后传递信息到后台、刷新列表
     };
   },
 });

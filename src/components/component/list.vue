@@ -13,15 +13,10 @@
               @ok="handleOk"
               ok-text="确认"
               cancel-text="取消"
-            >
-              <p>Some contents...</p>
-              <p>Some contents...</p>
-              <p>Some contents...</p>
-              <p>Some contents...</p>
-              <p>Some contents...</p>
-              <p>Some contents...</p>
-              <p>Some contents...</p>
-              <p>Some contents...</p>
+            ><div>
+              {{listMenu[0]}}
+            </div>
+             
             </a-modal>
             <a-radio-button value="large">收藏</a-radio-button>
             <a-radio-button value="large">下载</a-radio-button>
@@ -340,12 +335,21 @@ export default defineComponent({
     FileOutlined,
     PlusOutlined,
   },
-  setup() {
-    // calldps('p111').then((res)=>{
-    //   console.log(res)
-
-    // });
-
+  props:{
+    listMenu: { // 菜单数据
+            
+            required: true,
+            default(){
+                return []
+            }
+        }
+  },
+  setup(props) {
+    console.log(111);
+    let listMenu = props.listMenu
+    console.log(1010010101010,props,props.listMenu.value);
+    console.log(10,props.listMenu);
+    console.log(3333333333333,props.listMenu[0]);
     //定义变量
     const state = reactive({
       selectedRowKeys: [], // Check here to configure the default column
@@ -608,111 +612,49 @@ export default defineComponent({
         icon: true,
         imageurl: require("../../assets/document.png"),
       },
-      {
-        key: "2",
-        name: "Green",
-        age: 42,
-        isFiled: "未归档",
-        size: "18KB",
-        seeTime: "2020-05-08",
-        _id: "NBer",
-
-        tags: [
-          {
-            key: "系统标签1",
-            color: "orange",
-            isSystemTag: true,
-          },
-          {
-            key: "系统标签2",
-            color: "orange",
-            isSystemTag: true,
-          },
-          {
-            key: "工程",
-            color: "orange",
-            isSystemTag: false,
-            isClick: true,
-          },
-          {
-            key: "项目",
-            color: "orange",
-            isSystemTag: false,
-            isClick: false,
-          },
-        ],
-        action: "...",
-        icon: true,
-        imageurl: require("../../assets/document.png"),
-      },
       // {
       //   key: "2",
-      //   name: "Joe Black",
-      //   age: 32,
+      //   name: "Green",
+      //   age: 42,
       //   isFiled: "未归档",
       //   size: "18KB",
-      //   seeTime: "2020-05-07",
+      //   seeTime: "2020-05-08",
+      //   _id: "NBer",
+
       //   tags: [
       //     {
-      //       key: "机密",
-      //       color: "red",
+      //       key: "系统标签1",
+      //       color: "orange",
+      //       isSystemTag: true,
       //     },
       //     {
-      //       key: "重要",
-      //       color: "blue",
+      //       key: "系统标签2",
+      //       color: "orange",
+      //       isSystemTag: true,
+      //     },
+      //     {
+      //       key: "工程",
+      //       color: "orange",
+      //       isSystemTag: false,
+      //       isClick: true,
+      //     },
+      //     {
+      //       key: "项目",
+      //       color: "orange",
+      //       isSystemTag: false,
+      //       isClick: false,
       //     },
       //   ],
       //   action: "...",
-      // },
-      // {
-      //   key: "3",
-      //   name: "Joe Black",
-      //   isFiled: "未归档",
-      //   size: "18KB",
-      //   age: 32,
-      //   seeTime: "2020-05-07",
-      //   tags: [
-      //     {
-      //       key: "机密",
-      //       color: "red",
-      //     },
-      //     {
-      //       key: "重要",
-      //       color: "blue",
-      //     },
-      //   ],
-      //   action: "...",
-      // },
-      // {
-      //   key: "4",
-      //   name: "Joe Black",
-      //   isFiled: "未归档",
-      //   size: "18KB",
-      //   age: 32,
-      //   seeTime: "2020-05-07",
-      //   tags: [
-      //     {
-      //       key: "机密",
-      //       color: "red",
-      //     },
-      //     {
-      //       key: "重要",
-      //       color: "blue",
-      //     },
-      //   ],
-      //   action: "...",
+      //   icon: true,
+      //   imageurl: require("../../assets/document.png"),
       // },
     ]);
-    const list = [
-      { tag: "标签一" },
-      {
-        tag: "标签二",
-      },
-    ];
-
+   
+// const data=listMenu.map(it)
+console.log("data",data);
     const showModal = () => {
       visible.value = true;
-      console.log("MODAL");
     };
     let selectTag = {};
     let selectID = "";
@@ -884,7 +826,6 @@ export default defineComponent({
       onSelectChange,
       handleStarChange,
       value: ref([]),
-      list,
       creatTag,
       handleClose,
       showInput,
@@ -894,6 +835,8 @@ export default defineComponent({
       handleTagClick1,
       changeView,
       del,
+      // listMenu,
+     
     };
   },
 });

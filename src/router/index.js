@@ -58,7 +58,7 @@ const routes = [
     path: "/about",
     name: "About",
     component: () =>
-      import( "../views/About.vue"),
+      import( "../components/pages/myFile.vue"),
   },
   {
     path: "/bb",
@@ -73,7 +73,7 @@ const routes = [
   {
     path: "/ab",
     name: "ab",
-    component: () => import( "../components/pages/b.vue"),
+    component: () => import( "../components/content/b.vue"),
   },
   {
     path: "/filedetail",
