@@ -584,7 +584,13 @@ export default defineComponent({
         // console.log(info.file, info.fileList);
       }
       if (info.file.status === "done") {
-        let truesize = state.size / 1000 + "KB";
+        let truesize
+        if(state.size > 0&& state.size < 1000000) {
+           truesize = (state.size / 1000).toFixed(2) + "KB";
+        } else if(state.size >= 1000000) {
+         truesize = (state.size / 1000000).toFixed(2) + "MB";
+
+        }
         console.log(1111111111, info.file.response);
         //在文件上传成功后传递信息到后台
         calldps(URL.common.upload, {
