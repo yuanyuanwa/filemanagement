@@ -406,7 +406,8 @@ import { PlusOutlined } from "@ant-design/icons-vue";
 import moment from "moment";
 // import api from "../api";
 import calldps from "../../api/calldps";
-
+import URL from "../../api/url";
+// import  {loadTableData}  from "../../api/index";
 import {
   defineComponent,
   ref,
@@ -472,13 +473,14 @@ export default defineComponent({
 
     //请求文件列表
     const loadTable = () => {
-      calldps("file_manager/get_myfile", {
+
+      calldps(URL.common.list, {
         owener: "小明",
       }).then((res) => {
         // console.log(listMenu);
         console.log("刷新列表", res);
         console.log(data);
-        let newList = res[0];
+        // let newList = res[0];
         // let a=item.labels.split("|");
         data.value = res.map((item, index) => {
           return {
