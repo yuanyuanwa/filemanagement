@@ -49,25 +49,8 @@
       <div class="list">
         <div>
           <a-radio-group v-model:value="size" class="button">
-            <a-radio-button value="large" @click.prevent="showModal"
-              >分享</a-radio-button
-            >
-            <a-modal
-              v-model:visible="visible"
-              title="分享文档"
-              @ok="handleOk"
-              ok-text="确认"
-              cancel-text="取消"
-            >
-              <p>Some contents...</p>
-              <p>Some contents...</p>
-              <p>Some contents...</p>
-              <p>Some contents...</p>
-              <p>Some contents...</p>
-              <p>Some contents...</p>
-              <p>Some contents...</p>
-              <p>Some contents...</p>
-            </a-modal>
+            <a-radio-button value="large">分享</a-radio-button>
+
             <a-radio-button value="large">收藏</a-radio-button>
             <a-radio-button value="large">下载</a-radio-button>
             <a-radio-button value="large">移动到</a-radio-button>
@@ -219,6 +202,7 @@
                       @ok="handleOk1"
                       ok-text="确认"
                       cancel-text="取消"
+                      :footer="null"
                     >
                       <div class="tag">
                         <!-- //热门标签： -->
@@ -256,7 +240,7 @@
                           <a-tag
                             :key="tag.key"
                             :closable="true"
-                            @close="handleClose(tag, record)"
+                            @close.prevent="handleClose(tag, record)"
                             @click="handleTagClick(tag, record)"
                             :color="tag.isClick ? 'cyan' : ''"
                           >
@@ -285,6 +269,15 @@
                       </div>
                     </a-modal>
                   </a-menu-item>
+                  <!-- <a-modal
+                    v-model:visible="visible"
+                    title="分享文档"
+                    @ok="handleOk"
+                    ok-text="确认"
+                    cancel-text="取消"
+                  >
+                    <div>是否删除该标签</div>
+                  </a-modal> -->
                   <a-menu-item key="3">
                     <a
                       target="_blank"
@@ -352,7 +345,11 @@
                           <div>{{ appli }}</div>
                         </div>
                       </div>
-                      <div v-else>该文档还未添加标签，暂无应用</div>
+                      <div v-else>
+                        <div class="nullnull">
+                          <div>该文档还未添加标签，暂无应用</div>
+                        </div>
+                      </div>
                     </a-modal>
                   </a-menu-item>
                   <a-menu-item key="7">
@@ -402,12 +399,14 @@
 
 <script>
 import { FileOutlined } from "@ant-design/icons-vue";
+import { message } from 'ant-design-vue';
 import { PlusOutlined } from "@ant-design/icons-vue";
 import moment from "moment";
 // import api from "../api";
 import calldps from "../../api/calldps";
 import URL from "../../api/url";
 // import  {loadTableData}  from "../../api/index";
+import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import {
   defineComponent,
   ref,
@@ -416,7 +415,9 @@ import {
   toRefs,
   nextTick,
   onMounted,
+  createVNode
 } from "vue";
+import { Modal } from "ant-design-vue";
 // import { ColumnProps } from 'ant-design-vue/es/table/interface';
 
 export default defineComponent({
@@ -471,9 +472,8 @@ export default defineComponent({
       loadTable();
     });
 
-    //请求文件列表
+    //请求文件列表calldps
     const loadTable = () => {
-
       calldps(URL.common.list, {
         owener: "小明",
       }).then((res) => {
@@ -522,6 +522,48 @@ export default defineComponent({
       });
     };
 
+   //请求标签calldps
+    const loadList=(record)=>{
+      let currentTags = [];
+      try {
+        currentTags = record.tags.map((item) => {
+          return item.key;
+        });
+      } catch (e) {
+        console.log(e);
+      }
+      calldps(URL.common.labels, {
+        author: "小明",
+      }).then((res) => {
+        // console.log(listMenu);
+        console.log("获取系统标签", res);
+        if (res && res.length > 0) {
+          try {
+            let data = res[0];
+            state.systemTags = data.sys_labels.map((item) => {
+              let isClick = currentTags.includes(item.name);
+              return {
+                key: item.id,
+                name: item.name,
+                isClick,
+              };
+            });
+            state.tags = data.user_labels.map((item) => {
+              return {
+                key: item.id,
+                name: item.name,
+                isClick: currentTags.includes(item.name),
+              };
+            });
+          } catch (e) {
+            console.log(e);
+          }
+        }
+      });
+      selectID = record._id;
+      selectTag = record;
+    }
+
     //在上传文件前获取文件名称
     const beforeUpload = (file, FileItem) => {
       console.log(file);
@@ -545,7 +587,7 @@ export default defineComponent({
         let truesize = state.size / 1000 + "KB";
         console.log(1111111111, info.file.response);
         //在文件上传成功后传递信息到后台
-        calldps("file_manager/file_upload", {
+        calldps(URL.common.upload, {
           // attach_id: info.file.response.attach_id,
           ftype: info.file.response.ext,
           fname: info.file.response.filename,
@@ -567,7 +609,7 @@ export default defineComponent({
     //删除文件
     const deletfile = (record) => {
       console.log("已删除");
-      calldps("file_manager/delete_file", {
+      calldps(URL.common.delete, {
         id: record.id,
         fid: record.fid,
       }).then((res) => {
@@ -603,7 +645,7 @@ export default defineComponent({
       // console.log(11111,tags);
       tag.isClick = !tag.isClick;
       tag.isClick === true ? (state.option = 1) : (state.option = 2);
-      calldps("file_manager/op_label", {
+      calldps(URL.common.option, {
         owener: "小明",
         id: record.id,
         label_id: tag.key,
@@ -612,11 +654,20 @@ export default defineComponent({
       }).then((res) => {
         // console.log(listMenu);
         console.log("刷新列表", res);
+        if(state.option===1){
+          message.success('添加标签成功');
+        }else{
+          message.success('删除标签成功');
+        }
         loadTable();
-      });
+      }).catch((e=>{
+        console.log(e);
+        message.error('添加标签失败');
+      }));
     };
     //自定义标签选中和不选中
     const handleTagClick = (tag, record) => {
+      console.log('xuanbuxuanzhong')
       // console.log(tag.key);
       // console.log(tag.name);
       console.log("RECORD", record);
@@ -624,7 +675,7 @@ export default defineComponent({
       // console.log(11111,tags);
       tag.isClick = !tag.isClick;
       tag.isClick === true ? (state.option = 1) : (state.option = 2);
-      calldps("file_manager/op_label", {
+      calldps(URL.common.option, {
         owener: "小明",
         id: record.id,
         label_id: tag.key,
@@ -633,8 +684,17 @@ export default defineComponent({
       }).then((res) => {
         // console.log(listMenu);
         console.log("刷新列表", res);
+        if(state.option===1){
+          message.success('添加标签成功');
+        }else{
+          message.success('删除标签成功');
+        }
+        
         loadTable();
-      });
+      }).catch((e=>{
+        console.log(e);
+        message.error('添加标签失败');
+      }));
     };
     //确认时不重复输入
     const handleInputConfirm = ($event, record) => {
@@ -668,7 +728,7 @@ export default defineComponent({
       console.log(obj.key);
       console.log(obj.name);
 
-      calldps("file_manager/op_label", {
+      calldps(URL.common.option, {
         owener: "小明",
         id: record.id,
         label_id: obj.key,
@@ -677,25 +737,64 @@ export default defineComponent({
       }).then((res) => {
         // console.log(listMenu);
         console.log("刷新列表", res);
+        message.success('创建标签成功');
         loadTable();
+      }).catch((e)=>{
+        console.log(e);
+        message.error('创建标签失败');
       });
     };
 
     //清除标签
     const handleClose = (removedTag, record) => {
       console.log("removedTag", removedTag);
-      (state.option = 3), console.log("state.option", state.option);
-      calldps("file_manager/op_label", {
-        owener: "小明",
-        id: record.id,
-        label_id: removedTag.key,
-        label_name: removedTag.name,
-        op: state.option,
-      }).then((res) => {
-        // console.log(listMenu);
-        console.log("刷新列表", res);
-        loadTable();
+      state.option = 3
+      // visible.value = true;     
+      Modal.confirm({
+        title: "你要销毁这个标签吗?",
+        icon: createVNode(ExclamationCircleOutlined),
+        content: createVNode(
+          "div",
+          { style: "color:red;" },
+          // "Some descriptions"
+          
+        ),
+        okText: '确认',
+        cancelText: '取消',
+        onOk() {
+         
+          calldps(URL.common.option, {
+            owener: "小明",
+            id: record.id,
+            label_id: removedTag.key,
+            label_name: removedTag.name,
+            op: state.option,
+          }).then((res) => {
+            message.success('销毁标签成功');
+            // console.log(listMenu);
+            console.log("刷新列表", res);
+            loadList(record)
+            loadTable();
+          }).catch((e)=>{
+            console.log(e);
+            message.error('销毁标签失败');
+          });
+         
+         
+        },
+        onCancel() {
+
+         
+          return false
+          console.log("Cancel");
+        },
+        class: "test",
       });
+     
+    };
+    const handleOk = (e) => {
+      console.log(1, e);
+      visible.value = false;
     };
 
     const handleOk1 = (e) => {
@@ -821,127 +920,45 @@ export default defineComponent({
       },
     ];
 
-    const showModal = () => {
-      visible.value = true;
-      console.log("MODAL");
-    };
     let selectTag = {};
     let selectID = "";
+
+    //获取标签
     const showModal1 = (record) => {
       console.log("record", record);
-      let currentTags = [];
-      try {
-        currentTags = record.tags.map((item) => {
-          return item.key;
-        });
-      } catch (e) {
-        console.log(e);
-      }
-      calldps("file_manager/get_mylabels", {
-        author: "小明",
-      }).then((res) => {
-        // console.log(listMenu);
-        console.log("获取系统标签", res);
-        if (res && res.length > 0) {
-          try {
-            let data = res[0];
-            state.systemTags = data.sys_labels.map((item) => {
-              let isClick = currentTags.includes(item.name);
-              return {
-                key: item.id,
-                name: item.name,
-                isClick,
-              };
-            });
-            state.tags = data.user_labels.map((item) => {
-              return {
-                key: item.id,
-                name: item.name,
-                isClick: currentTags.includes(item.name),
-              };
-            });
-          } catch (e) {
-            console.log(e);
-          }
-        }
-      });
+      
+      loadList(record)
       console.log(record);
-      selectID = record._id;
-      // 这是系统标签
-      // state.systemTags = record.tags
-      //   .filter((v) => v.isSystemTag)
-      //   .map((item, index) => {
-      //     return {
-      //       key: index,
-      //       name: item.key,
-      //       isClick: item.isClick,
-      //       isSystemTag: item.isSystemTag,
-      //     };
-      //   });
-      // 自定义标签
-      // state.tags = record.tags
-      //   .filter((v) => !v.isSystemTag)
-      //   .map((item, index) => {
-      //     return {
-      //       key: index,
-      //       name: item.key,
-      //       isClick: item.isClick,
-      //       isSystemTag: item.isSystemTag,
-      //     };
-      //   });
-      // if(item.isSystemTag) {
-      //   return true
-      // } else {
-      //   return false
-      // }
-      // 自定义标签
-      // 清空状态
-      // state.tags = [
-      //   { key: 1, name: "机密", isClick: false },
-      //   { key: 2, name: "个人", isClick: false },
-      //   { key: 3, name: "工作", isClick: false },
-      //   { key: 4, name: "加油", isClick: false },
-      // ];
-      // if(selectTag&&selectTag.tags){
-      //   state.tags=selectTag.tags.map((item,index)=>{
-      //     return{
-      //       key:index,
-      //       name:item.key,
-      //       isClick:true
-      //     }
-      //   })
-      // }
-      selectTag = record;
-      console.log(selectTag);
+
+    
       visible1.value = true;
     };
+    //应用
     const showModal2 = (record) => {
       console.log("rerere", record);
-      calldps("file_manager/map_app", {
+      calldps(URL.common.app, {
         id: record.id,
       }).then((res) => {
         // console.log(listMenu);
         console.log("应用", res);
-        state.applications = res.map(item=>{
-          item.url.includes("?")?item.url=item.url+'&fid=':item.url=item.url+'?fid=';
-          return{
-            id:item.id,
-            name:item.name,
-            url:item.url+record.fid
-          }
-        });
         console.log(1111, state.applications);
         if (res) {
+          state.applications = res.map((item) => {
+            item.url.includes("?")
+              ? (item.url = item.url + "&fid=")
+              : (item.url = item.url + "?fid=");
+            return {
+              id: item.id,
+              name: item.name,
+              url: item.url + record.fid,
+            };
+          });
           state.hasapp = true;
         } else {
-          state.hasapp =false;
+          state.hasapp = false;
         }
       });
       visible2.value = true;
-    };
-    const handleOk = (e) => {
-      console.log(1, e);
-      visible.value = false;
     };
     const handleOk2 = (e) => {
       console.log(e);
@@ -971,7 +988,6 @@ export default defineComponent({
       visible,
       visible1,
       visible2,
-      showModal,
       showModal1,
       showModal2,
       handleOk,
@@ -1178,5 +1194,13 @@ export default defineComponent({
 }
 .tagsname-a {
   color: #666666;
+}
+.nullnull {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80px;
+  width: 472px;
+  /* border: 1px solid pink; */
 }
 </style>
