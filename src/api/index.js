@@ -3,7 +3,7 @@ import calldps from './calldps'
 import {RMI_SERVLET_URL,REMOTE_SERVER} from './config'
 import encrypt from './encrypt'
 import axios from 'axios'
-
+import url from './url'
 axios.defaults.withCredentials = true
 export default {
   encode: (className, methodName, params) => {
@@ -59,5 +59,8 @@ export default {
   },
   calldps(dpsname, params = {}){
     return calldps(dpsname, params)
+  },
+  loadTableData(params) {
+    return calldps(URL.comon.list,params)
   }
 }

@@ -64,6 +64,7 @@ export default defineComponent({
     const state = reactive({
       uploadurl: "",
       size: "", //上传文件大小
+      lis
     });
     
     let listMenu=[]

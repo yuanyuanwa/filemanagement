@@ -132,22 +132,8 @@
             <span> 文件名称 </span>
           </template>
 
-          //大小
-          <template #size="{ record }">
-            <span>
-              {{ record.size }}
-            </span>
-          </template>
-
-          //状态
-          <template #state="{ record }">
-            <span>
-              {{ record.isFiled }}
-            </span>
-          </template>
-
           <template #tags="{ record }">
-            <span v-if="record.tags.length > 0">
+            <span v-if="record.tags.length > 0" class="filetags">
               <span v-for="tag in record.tags" :key="tag">
                 <a-tag
                   v-if="tag.isClick || tag.isSystemTag"
@@ -158,7 +144,21 @@
                 </a-tag>
               </span>
             </span>
-            <span v-else>-</span>
+            <span v-else class="line">-</span>
+          </template>
+
+          //大小
+          <template #size="{ record }">
+            <span>
+              {{ record.size }}
+            </span>
+          </template>
+
+          //状态
+          <template #state="{ record }">
+            <span class="filestate">
+              {{ record.isFiled }}
+            </span>
           </template>
 
           //浏览次数
@@ -221,6 +221,18 @@
                       cancel-text="取消"
                     >
                       <div class="tag">
+                        <!-- //热门标签： -->
+                        <div class="system-tag">
+                          <div>热门标签：</div>
+                          <div>
+                            <span>
+                              <a-tag color="red">
+                                {{ "热门标签" }}
+                              </a-tag>
+                            </span>
+                          </div>
+                        </div>
+
                         <div class="system-tag">
                           <div>系统标签：</div>
                           <div>
@@ -231,8 +243,7 @@
                               <a-tag
                                 :key="tag.key"
                                 :closable="false"
-                               
-                                @click="handleTagClick1(tag)"
+                                @click="handleTagClick1(tag, record)"
                                 :color="tag.isClick ? 'cyan' : ''"
                               >
                                 {{ tag.name }}
@@ -245,8 +256,8 @@
                           <a-tag
                             :key="tag.key"
                             :closable="true"
-                            @close="handleClose(tag,record)"
-                            @click="handleTagClick(tag)"
+                            @close="handleClose(tag, record)"
+                            @click="handleTagClick(tag, record)"
                             :color="tag.isClick ? 'cyan' : ''"
                           >
                             {{ tag.name }}
@@ -259,8 +270,8 @@
                           size="small"
                           :style="{ width: '78px' }"
                           v-model:value="inputValue"
-                          @blur="handleInputConfirm"
-                          @keyup.enter="handleInputConfirm"
+                          @blur="handleInputConfirm($event, record)"
+                          @keyup.enter="handleInputConfirm($event, record)"
                         />
                         <a-tag
                           v-else
@@ -305,7 +316,7 @@
                     </a>
                   </a-menu-item>
                   <a-menu-item key="6">
-                    <a rel="noopener noreferrer" @click="showModal2">
+                    <a rel="noopener noreferrer" @click="showModal2(record)">
                       <i class="icon iconfont icon-yingyong"></i>
                       应用
                     </a>
@@ -315,20 +326,33 @@
                       @ok="handleOk2"
                       ok-text="确认"
                       cancel-text="取消"
+                      :footer="null"
                     >
-                      <div class="app">
-                        <div>
+                      <div class="app" v-if="hasapp">
+                        <div class="box">
                           <div
                             v-for="(item, i) in applications"
                             :key="i"
                             class="applications"
                           >
-                            <i :class="[icon, iconfont, item.iconname]"></i>
-                            <a :href="item.url">{{ item.name }}</a>
+                            <div class="tagsname">
+                              <a
+                                :href="item.url"
+                                class="tagsname-a"
+                                target="_blank"
+                                >{{ item.name }}</a
+                              >
+                            </div>
+                            <div class="img-container">
+                              <div>
+                                <img :src="appimg" alt="" class="box_img" />
+                              </div>
+                            </div>
                           </div>
                           <div>{{ appli }}</div>
                         </div>
                       </div>
+                      <div v-else>该文档还未添加标签，暂无应用</div>
                     </a-modal>
                   </a-menu-item>
                   <a-menu-item key="7">
@@ -344,11 +368,7 @@
                     </a>
                   </a-menu-item>
                   <a-menu-item key="8">
-                    <a
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      href="http://www.taobao.com/"
-                    >
+                    <a @click="deletfile(record)">
                       <i class="icon iconfont icon-delete"></i>
                       删除
                     </a>
@@ -394,7 +414,7 @@ import {
   reactive,
   toRefs,
   nextTick,
-  onMounted
+  onMounted,
 } from "vue";
 // import { ColumnProps } from 'ant-design-vue/es/table/interface';
 
@@ -431,48 +451,26 @@ export default defineComponent({
       // totalTag: [], //
       inputVisible: false,
       inputValue: "",
-      applications: [
-        {
-          key: 1,
-          name: "科学城大屏展示",
-          url: "https://baidu.com",
-          iconname: "icon-pingmu",
-        },
-        {
-          key: 2,
-          name: "查看Excel内容",
-          url: "https://baidu.com",
-          iconname: "icon-Excel",
-        },
-        {
-          key: 3,
-          name: "查看图片",
-          url: "https://baidu.com",
-          iconname: "icon-tupian",
-        },
-        {
-          key: 4,
-          name: "XXX部门大屏展示",
-          url: "https://baidu.com",
-          iconname: "icon-pingmu",
-        },
-      ],
+      applications: "",
       changeList: false,
       view: true,
-      icon: "icon",
-      iconfont: "iconfont",
       appli: "",
       uploadurl: "",
       size: "", //上传文件大小
+      option: "",
+      appimg: require("../../assets/example.png"),
+      hasapp: false,
       // iconname:ref('icon-0-57')
     });
 
     let data = ref();
+
+    //加载页面时请求列表
     onMounted(() => {
-      loadTable()
-      
-    })
-    
+      loadTable();
+    });
+
+    //请求文件列表
     const loadTable = () => {
       calldps("file_manager/get_myfile", {
         owener: "小明",
@@ -484,6 +482,7 @@ export default defineComponent({
         // let a=item.labels.split("|");
         data.value = res.map((item, index) => {
           return {
+            id: item.id,
             key: index,
             fid: item.fid,
             name: item.fname,
@@ -533,8 +532,8 @@ export default defineComponent({
         timer;
       console.log(state.uploadurl);
     };
-    //文件上传成功后刷新列表
 
+    //文件上传成功后刷新列表
     const handleChange = (info) => {
       // console.log(555555555555,listMenu);
       if (info.file.status !== "uploading") {
@@ -556,44 +555,34 @@ export default defineComponent({
           // message.success(`${info.file.name} file uploaded successfully`);
 
           //传递信息成功后刷新列表
-          loadTable()
-          // calldps("file_manager/get_myfile", {
-          //   owener: "小明",
-          // }).then((res) => {
-          //   // console.log(listMenu);
-          //   console.log("刷新列表", res);
-          //   console.log(data);
-          //   let newList = res[0];
-          //   console.log(66666666666666, newList);
-          // });
+          loadTable();
         });
       } else if (info.file.status === "error") {
         // message.error(`${info.file.name} file upload failed.`);
       }
     };
+
+    //删除文件
+    const deletfile = (record) => {
+      console.log("已删除");
+      calldps("file_manager/delete_file", {
+        id: record.id,
+        fid: record.fid,
+      }).then((res) => {
+        if (res === 1) {
+          loadTable();
+        } else {
+          return;
+        }
+      });
+    };
+
     const inputRef = ref();
 
     //删除选中的文件
     const del = () => {
       //发起删除请求
       console.log("删除");
-    };
-
-    //清除标签
-    const handleClose = (removedTag,record) => {
-      calldps("file_manager/delete_file", {
-      id: record.id,
-      fid:record.fid
-      }).then((res) => {
-        
-      });
-      //removedTag：要清除的标签
-
-      console.log(1, removedTag);
-      const tags = state.tags.filter((tag) => tag !== removedTag);
-      console.log(tags);
-      state.tags = tags;
-      console.log(33, state.tags);
     };
 
     const showInput = () => {
@@ -604,29 +593,51 @@ export default defineComponent({
     };
 
     //系统标签选中和不选中
-    const handleTagClick1 = (tag) => {
-      console.log(tag);
-
+    const handleTagClick1 = (tag, record) => {
+      // console.log(tag.key);
+      // console.log(tag.name);
+      console.log("RECORD", record);
       let tags = state.systemTags;
-      tags.map((item) => {
-        if (item.name === tag.name) {
-          item.isClick = !tag.isClick;
-        }
+      // console.log(11111,tags);
+      tag.isClick = !tag.isClick;
+      tag.isClick === true ? (state.option = 1) : (state.option = 2);
+      calldps("file_manager/op_label", {
+        owener: "小明",
+        id: record.id,
+        label_id: tag.key,
+        label_name: tag.name,
+        op: state.option,
+      }).then((res) => {
+        // console.log(listMenu);
+        console.log("刷新列表", res);
+        loadTable();
       });
     };
     //自定义标签选中和不选中
-    const handleTagClick = (tag) => {
-      console.log(tag);
-      let tags = state.tags;
-      tags.map((item) => {
-        if (item.name === tag.name) {
-          item.isClick = !tag.isClick;
-        }
+    const handleTagClick = (tag, record) => {
+      // console.log(tag.key);
+      // console.log(tag.name);
+      console.log("RECORD", record);
+      let tags = state.systemTags;
+      // console.log(11111,tags);
+      tag.isClick = !tag.isClick;
+      tag.isClick === true ? (state.option = 1) : (state.option = 2);
+      calldps("file_manager/op_label", {
+        owener: "小明",
+        id: record.id,
+        label_id: tag.key,
+        label_name: tag.name,
+        op: state.option,
+      }).then((res) => {
+        // console.log(listMenu);
+        console.log("刷新列表", res);
+        loadTable();
       });
-      console.log("tag", tag);
     };
     //确认时不重复输入
-    const handleInputConfirm = () => {
+    const handleInputConfirm = ($event, record) => {
+      (state.option = 4), console.log("state.option", state.option);
+      console.log("RECORD", record);
       const inputValue = state.inputValue;
       if (!inputValue) return;
       let obj = {
@@ -652,6 +663,100 @@ export default defineComponent({
         inputValue: "",
       });
       console.log(55, state.tags);
+      console.log(obj.key);
+      console.log(obj.name);
+
+      calldps("file_manager/op_label", {
+        owener: "小明",
+        id: record.id,
+        label_id: obj.key,
+        label_name: obj.name,
+        op: state.option,
+      }).then((res) => {
+        // console.log(listMenu);
+        console.log("刷新列表", res);
+        loadTable();
+      });
+    };
+
+    //清除标签
+    const handleClose = (removedTag, record) => {
+      console.log("removedTag", removedTag);
+      (state.option = 3), console.log("state.option", state.option);
+      calldps("file_manager/op_label", {
+        owener: "小明",
+        id: record.id,
+        label_id: removedTag.key,
+        label_name: removedTag.name,
+        op: state.option,
+      }).then((res) => {
+        // console.log(listMenu);
+        console.log("刷新列表", res);
+        loadTable();
+      });
+    };
+
+    const handleOk1 = (e) => {
+      // console.log(3333, e);
+      // console.log(2, selectTag);
+      // let all = state.tags.concat(state.systemTags);
+      // console.log("all", all);
+
+      // console.log(223, data.value);
+
+      // data.value = data.value.map((item) => {
+      //   if (item._id === selectID) {
+      //     item.tags = all.map((item) => {
+      //       return {
+      //         key: item.name,
+      //         color: "orange",
+      //         isSystemTag: item.isSystemTag,
+      //         isClick: item.isClick,
+      //       };
+      //     });
+      //   }
+      //   return item;
+      // });
+      // selectTag = all.map((item) => {
+      //   return {
+      //     key: item.name,
+      //     color: "orange",
+      //     isSystemTag: item.isSystemTag,
+      //     isClick: item.isClick,
+      //   };
+      // });
+      // console.log("selectTag", selectTag);
+
+      // //合并系统标签和自定义标签
+      // state.totalTag = state.tags.concat(state.systemTags);
+      // console.log(55555, state.totalTag);
+
+      // //选择标签
+      // selectTag.tags = state.totalTag
+      //   .filter((v) => v.isClick)
+      //   .map((item) => {
+      //     return {
+      //       key: item.name,
+      //       //cyan:青绿色s
+      //       color: item.isClick ? "cyan" : "",
+      //     };
+      //   });
+      // console.log("selectTag.tags", selectTag.tags);
+
+      visible1.value = false;
+      // data.value = data.value.map((item) => {
+      //   if (item._id === selectID) {
+      //     item.tags = all.map((item) => {
+      //       return {
+      //         key: item.name,
+      //         color: "orange",
+      //         isSystemTag: item.isSystemTag,
+      //         isClick: item.isClick,
+      //       };
+      //     });
+      //   }
+      //   return item;
+      // });
     };
 
     const changeView = () => {
@@ -673,6 +778,12 @@ export default defineComponent({
         slots: { title: "customTitle", customRender: "name" },
       },
       {
+        title: "标签",
+        // dataIndex: "actions",
+        key: "tags",
+        slots: { customRender: "tags" },
+      },
+      {
         title: "大小",
         // dataIndex: "age",
         key: "size",
@@ -684,12 +795,7 @@ export default defineComponent({
         key: "state",
         slots: { customRender: "state" },
       },
-      {
-        title: "标签",
-        // dataIndex: "actions",
-        key: "tags",
-        slots: { customRender: "tags" },
-      },
+
       {
         title: "浏览次数",
         key: "see",
@@ -771,16 +877,16 @@ export default defineComponent({
       //     };
       //   });
       // 自定义标签
-      state.tags = record.tags
-        .filter((v) => !v.isSystemTag)
-        .map((item, index) => {
-          return {
-            key: index,
-            name: item.key,
-            isClick: item.isClick,
-            isSystemTag: item.isSystemTag,
-          };
-        });
+      // state.tags = record.tags
+      //   .filter((v) => !v.isSystemTag)
+      //   .map((item, index) => {
+      //     return {
+      //       key: index,
+      //       name: item.key,
+      //       isClick: item.isClick,
+      //       isSystemTag: item.isSystemTag,
+      //     };
+      //   });
       // if(item.isSystemTag) {
       //   return true
       // } else {
@@ -807,79 +913,33 @@ export default defineComponent({
       console.log(selectTag);
       visible1.value = true;
     };
-    const showModal2 = () => {
-      calldps("p111").then((res) => {
-        console.log(res);
-        state.appli = res;
-        console.log(state.appli);
+    const showModal2 = (record) => {
+      console.log("rerere", record);
+      calldps("file_manager/map_app", {
+        id: record.id,
+      }).then((res) => {
+        // console.log(listMenu);
+        console.log("应用", res);
+        state.applications = res.map(item=>{
+          item.url.includes("?")?item.url=item.url+'&fid=':item.url=item.url+'?fid=';
+          return{
+            id:item.id,
+            name:item.name,
+            url:item.url+record.fid
+          }
+        });
+        console.log(1111, state.applications);
+        if (res) {
+          state.hasapp = true;
+        } else {
+          state.hasapp =false;
+        }
       });
       visible2.value = true;
     };
     const handleOk = (e) => {
       console.log(1, e);
       visible.value = false;
-    };
-    const handleOk1 = (e) => {
-      console.log(3333, e);
-      console.log(2, selectTag);
-      let all = state.tags.concat(state.systemTags);
-      console.log("all", all);
-
-      console.log(223, data.value);
-
-      data.value = data.value.map((item) => {
-        if (item._id === selectID) {
-          item.tags = all.map((item) => {
-            return {
-              key: item.name,
-              color: "orange",
-              isSystemTag: item.isSystemTag,
-              isClick: item.isClick,
-            };
-          });
-        }
-        return item;
-      });
-      // selectTag = all.map((item) => {
-      //   return {
-      //     key: item.name,
-      //     color: "orange",
-      //     isSystemTag: item.isSystemTag,
-      //     isClick: item.isClick,
-      //   };
-      // });
-      console.log("selectTag", selectTag);
-
-      // //合并系统标签和自定义标签
-      // state.totalTag = state.tags.concat(state.systemTags);
-      // console.log(55555, state.totalTag);
-
-      // //选择标签
-      // selectTag.tags = state.totalTag
-      //   .filter((v) => v.isClick)
-      //   .map((item) => {
-      //     return {
-      //       key: item.name,
-      //       //cyan:青绿色s
-      //       color: item.isClick ? "cyan" : "",
-      //     };
-      //   });
-      // console.log("selectTag.tags", selectTag.tags);
-
-      visible1.value = false;
-      // data.value = data.value.map((item) => {
-      //   if (item._id === selectID) {
-      //     item.tags = all.map((item) => {
-      //       return {
-      //         key: item.name,
-      //         color: "orange",
-      //         isSystemTag: item.isSystemTag,
-      //         isClick: item.isClick,
-      //       };
-      //     });
-      //   }
-      //   return item;
-      // });
     };
     const handleOk2 = (e) => {
       console.log(e);
@@ -936,6 +996,7 @@ export default defineComponent({
       del,
       beforeUpload, //在上传文件前获取文件名称
       handleChange, //文件上传成功后传递信息到后台、刷新列表
+      deletfile,
     };
   },
 });
@@ -1030,9 +1091,7 @@ export default defineComponent({
   border-bottom: 1px solid #f0f2f5;
   margin-bottom: 20px;
 }
-.applications {
-  padding: 10px 5px;
-}
+
 .dot {
   font-size: 25px;
   font-weight: 700;
@@ -1067,5 +1126,55 @@ export default defineComponent({
 
   white-space: nowrap;
   margin-bottom: 20px;
+}
+.filetags {
+  display: inline-block;
+  width: 100px;
+}
+.filestate {
+  display: inline-block;
+  width: 50px;
+}
+.line {
+  display: inline-block;
+  font-size: 20px;
+  width: 100px;
+  text-align: center;
+}
+.box {
+  display: flex;
+  flex-wrap: wrap;
+}
+.applications {
+  width: 216px;
+  /* height: 200px; */
+  border: 1px solid #f0f0f0;
+  margin: 12px 10px;
+  border-radius: 5%;
+}
+.applications:hover {
+  /* background-color: pink; */
+  box-shadow: 0 0px 4px rgba(41, 148, 255, 0.65);
+}
+.applications:hover .tagsname-a {
+  /* background-color: pink; */
+  color: #3f98f3;
+}
+.img-container {
+  padding-bottom: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.box_img {
+  width: 200px;
+  height: 108px;
+}
+
+.tagsname {
+  padding: 8px 8px 8px 12px;
+}
+.tagsname-a {
+  color: #666666;
 }
 </style>
