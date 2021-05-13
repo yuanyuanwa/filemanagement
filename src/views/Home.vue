@@ -82,14 +82,8 @@ export default defineComponent({
     DownOutlined,
     headercon: header,
   },
-  // mounted() {
-  //   console.log(this.$route.path)
-  // },
   setup() {
-    // onMounted (()=>{
-    //   console.log(111);
-    //   // console.log(111111,$route.path);
-    // })
+   
     const siderTop=ref(70)
     return {
       // selectedKeys2: ref(["sub0"]),

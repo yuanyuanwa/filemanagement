@@ -476,19 +476,51 @@ export default defineComponent({
     //加载页面时请求列表
     onMounted(() => {
       loadTable();
+      loadData();
     });
-
+    const loadData = () => {
+      calldps(URL.common.labels, {
+        author: "小明",
+      }).then((res) => {
+        // console.log(listMenu);
+        console.log("获取标签", res);
+        if (res && res.length > 0) {
+          try {
+            let data = res[0];
+            state.systemTags = data.sys_labels.map((item) => {
+              return {
+                key: item.id,
+                name: item.name,
+                isClick: false,
+              };
+            });
+          } catch (e) {
+            console.log(e);
+          }
+        }
+      });
+    };
     //请求文件列表calldps
     const loadTable = () => {
       calldps(URL.common.list, {
         owener: "小明",
       }).then((res) => {
         // console.log(listMenu);
-        console.log("刷新列表", res);
+        console.log("获取文件列表", res);
         console.log(data);
         // let newList = res[0];
         // let a=item.labels.split("|");
         data.value = res.map((item, index) => {
+          let allTags = [];
+          allTags = item.labels.split("|").concat(item.user_labels.split("|"));
+          allTags = allTags.filter(v => {return v !== ""}).map((v) => {
+            return {
+              key: v,
+              color: "blue",
+              isSystemTag: true,
+              isClick: false,
+            };
+          });
           return {
             id: item.id,
             key: index,
@@ -499,6 +531,8 @@ export default defineComponent({
             isFiled: "已归档",
             seeTime: item.modify_time,
             _id: index,
+            user_labels: item.user_labels,
+            labels: item.labels,
             //   tags:[
             //     {
             //        key: item.labels,
@@ -507,16 +541,7 @@ export default defineComponent({
             //        isClick: false,
             //     },
             // ],
-            tags: item.labels
-              ? item.labels.split("|").map((item) => {
-                  return {
-                    key: item,
-                    color: "blue",
-                    isSystemTag: true,
-                    isClick: false,
-                  };
-                })
-              : [],
+            tags: allTags,
 
             action: "...",
             icon: false,
@@ -680,38 +705,38 @@ export default defineComponent({
         });
     };
     //自定义标签选中和不选中
-    const handleTagClick = (tag, record) => {
-      console.log("xuanbuxuanzhong");
-      // console.log(tag.key);
-      // console.log(tag.name);
-      console.log("RECORD", record);
-      let tags = state.systemTags;
-      // console.log(11111,tags);
-      tag.isClick = !tag.isClick;
-      tag.isClick === true ? (state.option = 1) : (state.option = 2);
-      calldps(URL.common.option, {
-        owener: "小明",
-        id: record.id,
-        label_id: tag.key,
-        label_name: tag.name,
-        op: state.option,
-      })
-        .then((res) => {
-          // console.log(listMenu);
-          console.log("刷新列表", res);
-          if (state.option === 1) {
-            message.success("添加标签成功");
-          } else {
-            message.success("删除标签成功");
-          }
+    // const handleTagClick = (tag, record) => {
+    //   console.log("xuanbuxuanzhong");
+    //   // console.log(tag.key);
+    //   // console.log(tag.name);
+    //   console.log("RECORD", record);
+    //   let tags = state.systemTags;
+    //   // console.log(11111,tags);
+    //   tag.isClick = !tag.isClick;
+    //   tag.isClick === true ? (state.option = 1) : (state.option = 2);
+    //   calldps(URL.common.option, {
+    //     owener: "小明",
+    //     id: record.id,
+    //     label_id: tag.key,
+    //     label_name: tag.name,
+    //     op: state.option,
+    //   })
+    //     .then((res) => {
+    //       // console.log(listMenu);
+    //       console.log("刷新列表", res);
+    //       if (state.option === 1) {
+    //         message.success("添加标签成功");
+    //       } else {
+    //         message.success("删除标签成功");
+    //       }
 
-          loadTable();
-        })
-        .catch((e) => {
-          console.log(e);
-          message.error("添加标签失败");
-        });
-    };
+    //       loadTable();
+    //     })
+    //     .catch((e) => {
+    //       console.log(e);
+    //       message.error("添加标签失败");
+    //     });
+    // };
     //确认时不重复输入
     const handleInputConfirm = ($event, record) => {
       (state.option = 4), console.log("state.option", state.option);
@@ -743,7 +768,7 @@ export default defineComponent({
       console.log(55, state.tags);
       console.log(obj.key);
       console.log(obj.name);
-
+      console.log(999999999, record.id);
       calldps(URL.common.option, {
         owener: "小明",
         id: record.id,
@@ -752,9 +777,24 @@ export default defineComponent({
         op: state.option,
       })
         .then((res) => {
-          // console.log(listMenu);
-          console.log("刷新列表", res);
-          message.success("创建标签成功");
+          message.success("添加标签成功");
+          // calldps(URL.common.option, {
+          //   owener: "小明",
+          //   id: record.id,
+          //   label_id: obj.key,
+          //   label_name: obj.name,
+          //   op: 1,
+          // })
+          //   .then((res) => {
+          //     message.success("添加标签成功");
+          //     // message.success("添加标签成功");
+          //     loadTable();
+          //   })
+          //   .catch((e) => {
+          //     console.log(e);
+          //     message.error("添加标签失败");
+          //   });
+
           loadTable();
         })
         .catch((e) => {
@@ -885,10 +925,32 @@ export default defineComponent({
     const showModal1 = (record) => {
       console.log("record", record);
 
-      loadList(record);
+      // loadList(record);
       console.log(record);
-
+      getTags(record);
       visible1.value = true;
+    };
+    const getTags = (record) => {
+      let user_labels = [];
+      if (record.user_labels) {
+        user_labels = record.user_labels.split("|");
+      }
+      // let user_labels = record.user_labels ? record.user_labels.split("|") : [];
+      console.log("user_labels", user_labels);
+
+      state.tags = user_labels.map((item, index) => {
+        return {
+          key: index,
+          name: item,
+          isClick: true,
+        };
+      });
+
+      console.log("state.tags", state.tags);
+      state.systemTags.map((item) => {
+        item.isClick = record.labels.split("|").includes(item.name);
+        return item;
+      });
     };
     //应用
     const showModal2 = (record) => {
@@ -964,7 +1026,6 @@ export default defineComponent({
       handleClose,
       showInput,
       handleInputConfirm,
-      handleTagClick,
       inputRef,
       handleTagClick1,
       changeView,
