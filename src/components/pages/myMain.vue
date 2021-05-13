@@ -4,7 +4,7 @@
       <div class="head-con">
         <div class="recently">最近访问</div>
         <div>
-          <a-dropdown>
+          <a-dropdown :showUploadList="false">
             <a-button @click.prevent type="primary" class="upload">
               上传</a-button
             >
@@ -79,6 +79,9 @@
             selectedRowKeys: selectedRowKeys,
             onChange: onSelectChange,
           }"
+          :pagination="{
+            pageSize: 5,
+          }"
           :data-source="data"
           :columns="columns"
         >
@@ -86,18 +89,9 @@
             <div style="display: flex; justify-content: space-between">
               <div style="word-break: break-all; width: 100px">
                 <FileOutlined />
-                <router-link to="/filedetail">
+                <router-link to="/filedetail" style="color: #333333">
                   <span>{{ scope.text }}</span>
                 </router-link>
-                <!-- <span v-for="tag in scope.record.tags" :key="tag">
-                  <a-tag
-                    v-if="tag.isClick || tag.isSystemTag"
-                    :key="tag"
-                    :color="tag.color"
-                  >
-                    {{ tag.key }}
-                  </a-tag>
-                </span> -->
               </div>
               <div @click="handleStarChange(scope.record.key)">
                 <div v-if="scope.record.icon">
@@ -116,18 +110,42 @@
           </template>
 
           <template #tags="{ record }">
-            <span v-if="record.tags.length > 0" class="filetags">
-              <span v-for="tag in record.tags" :key="tag">
-                <a-tag
-                  v-if="tag.isClick || tag.isSystemTag"
-                  :key="tag"
-                  :color="tag.color"
-                >
-                  {{ tag.key }}
-                </a-tag>
-              </span>
-            </span>
-            <span v-else class="line">-</span>
+            <div class="tags-box" v-if="record.tags.length > 0">
+              <div class="tags-con">
+                <div class="filetags">
+                  <div v-for="tag in record.tags" :key="tag">
+                    <a-tag
+                      v-if="tag.isClick || tag.isSystemTag"
+                      :key="tag"
+                      :color="tag.color"
+                    >
+                      {{ tag.key }}
+                    </a-tag>
+                  </div>
+                </div>
+              </div>
+              <div class="tag-button">
+                <a-popover placement="bottomRight">
+                  <template #content>
+                    <div class="filetags tagtag">
+                      <div v-for="tag in record.tags" :key="tag">
+                        <a-tag
+                          v-if="tag.isClick || tag.isSystemTag"
+                          :key="tag"
+                          :color="tag.color"
+                        >
+                          {{ tag.key }}
+                        </a-tag>
+                      </div>
+                    </div>
+                  </template>
+                  <div>
+                    <img src="../../assets/arrow.png" alt="" class="tag-img" />
+                  </div>
+                </a-popover>
+              </div>
+            </div>
+            <span v-else class="line">无标签</span>
           </template>
 
           //大小
@@ -146,16 +164,12 @@
 
           //浏览次数
           <template #see="{ record }">
-            <span>
-              <a> {{ record.age }}次</a>
-            </span>
+            <span> {{ record.age }}次 </span>
           </template>
 
           //下载次数
           <template #download="{ record }">
-            <span>
-              <a> {{ record.age }}次</a>
-            </span>
+            <span> {{ record.age }}次 </span>
           </template>
 
           //最后浏览时间
@@ -194,7 +208,7 @@
                   <a-menu-item key="2">
                     <a rel="noopener noreferrer" @click="showModal1(record)">
                       <i class="icon iconfont icon-tianjiabiaoqian"></i>
-                      添加标签
+                      标签
                     </a>
                     <a-modal
                       v-model:visible="visible1"
@@ -328,17 +342,19 @@
                             :key="i"
                             class="applications"
                           >
-                            <div class="tagsname">
-                              <a
-                                :href="item.url"
-                                class="tagsname-a"
-                                target="_blank"
-                                >{{ item.name }}</a
-                              >
-                            </div>
-                            <div class="img-container">
-                              <div>
-                                <img :src="appimg" alt="" class="box_img" />
+                            <div @click="link(item)">
+                              <div class="tagsname">
+                                <a
+                                  :href="item.url"
+                                  class="tagsname-a"
+                                  target="_blank"
+                                  >{{ item.name }}</a
+                                >
+                              </div>
+                              <div class="img-container">
+                                <div>
+                                  <img :src="appimg" alt="" class="box_img" />
+                                </div>
                               </div>
                             </div>
                           </div>
@@ -398,15 +414,15 @@
 </template>
 
 <script>
-import { FileOutlined } from "@ant-design/icons-vue";
-import { message } from 'ant-design-vue';
+import { FileOutlined, CaretDownOutlined } from "@ant-design/icons-vue";
+import { message } from "ant-design-vue";
 import { PlusOutlined } from "@ant-design/icons-vue";
 import moment from "moment";
 // import api from "../api";
 import calldps from "../../api/calldps";
 import URL from "../../api/url";
 // import  {loadTableData}  from "../../api/index";
-import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
+import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import {
   defineComponent,
   ref,
@@ -415,7 +431,7 @@ import {
   toRefs,
   nextTick,
   onMounted,
-  createVNode
+  createVNode,
 } from "vue";
 import { Modal } from "ant-design-vue";
 // import { ColumnProps } from 'ant-design-vue/es/table/interface';
@@ -424,13 +440,9 @@ export default defineComponent({
   components: {
     FileOutlined,
     PlusOutlined,
+    CaretDownOutlined,
   },
   setup() {
-    // calldps('p111').then((res)=>{
-    //   console.log(res)
-
-    // });
-
     //定义变量
     const state = reactive({
       selectedRowKeys: [], // Check here to configure the default column
@@ -443,12 +455,6 @@ export default defineComponent({
       //   { key: 4, name: "加油", isClick: false },
       // ],
       tags: [],
-      // systemTags: [
-      //   { key: 1, name: "科学城", isClick: false },
-      //   { key: 2, name: "科学城1", isClick: false },
-      //   { key: 3, name: "科学城2", isClick: false },
-      //   { key: 4, name: "科学城3", isClick: false },
-      // ],
       systemTags: [],
       // totalTag: [], //
       inputVisible: false,
@@ -505,7 +511,7 @@ export default defineComponent({
               ? item.labels.split("|").map((item) => {
                   return {
                     key: item,
-                    color: "orange",
+                    color: "blue",
                     isSystemTag: true,
                     isClick: false,
                   };
@@ -522,8 +528,8 @@ export default defineComponent({
       });
     };
 
-   //请求标签calldps
-    const loadList=(record)=>{
+    //请求标签calldps
+    const loadList = (record) => {
       let currentTags = [];
       try {
         currentTags = record.tags.map((item) => {
@@ -562,7 +568,7 @@ export default defineComponent({
       });
       selectID = record._id;
       selectTag = record;
-    }
+    };
 
     //在上传文件前获取文件名称
     const beforeUpload = (file, FileItem) => {
@@ -584,14 +590,13 @@ export default defineComponent({
         // console.log(info.file, info.fileList);
       }
       if (info.file.status === "done") {
-        let truesize
-        if(state.size > 0&& state.size < 1000000) {
-           truesize = (state.size / 1000).toFixed(2) + "KB";
-        } else if(state.size >= 1000000) {
-         truesize = (state.size / 1000000).toFixed(2) + "MB";
-
+        let truesize;
+        if (state.size > 0 && state.size < 1000000) {
+          truesize = (state.size / 1000).toFixed(2) + "KB";
+        } else if (state.size >= 1000000) {
+          truesize = (state.size / 1000000).toFixed(2) + "MB";
         }
-        console.log(1111111111, info.file.response);
+
         //在文件上传成功后传递信息到后台
         calldps(URL.common.upload, {
           // attach_id: info.file.response.attach_id,
@@ -603,7 +608,7 @@ export default defineComponent({
         }).then((res) => {
           console.log(res);
           // message.success(`${info.file.name} file uploaded successfully`);
-
+          message.success("文件上传成功");
           //传递信息成功后刷新列表
           loadTable();
         });
@@ -621,6 +626,7 @@ export default defineComponent({
       }).then((res) => {
         if (res === 1) {
           loadTable();
+          message.success("文件删除成功");
         } else {
           return;
         }
@@ -657,23 +663,25 @@ export default defineComponent({
         label_id: tag.key,
         label_name: tag.name,
         op: state.option,
-      }).then((res) => {
-        // console.log(listMenu);
-        console.log("刷新列表", res);
-        if(state.option===1){
-          message.success('添加标签成功');
-        }else{
-          message.success('删除标签成功');
-        }
-        loadTable();
-      }).catch((e=>{
-        console.log(e);
-        message.error('添加标签失败');
-      }));
+      })
+        .then((res) => {
+          // console.log(listMenu);
+          console.log("刷新列表", res);
+          if (state.option === 1) {
+            message.success("添加标签成功");
+          } else {
+            message.success("删除标签成功");
+          }
+          loadTable();
+        })
+        .catch((e) => {
+          console.log(e);
+          message.error("添加标签失败");
+        });
     };
     //自定义标签选中和不选中
     const handleTagClick = (tag, record) => {
-      console.log('xuanbuxuanzhong')
+      console.log("xuanbuxuanzhong");
       // console.log(tag.key);
       // console.log(tag.name);
       console.log("RECORD", record);
@@ -687,20 +695,22 @@ export default defineComponent({
         label_id: tag.key,
         label_name: tag.name,
         op: state.option,
-      }).then((res) => {
-        // console.log(listMenu);
-        console.log("刷新列表", res);
-        if(state.option===1){
-          message.success('添加标签成功');
-        }else{
-          message.success('删除标签成功');
-        }
-        
-        loadTable();
-      }).catch((e=>{
-        console.log(e);
-        message.error('添加标签失败');
-      }));
+      })
+        .then((res) => {
+          // console.log(listMenu);
+          console.log("刷新列表", res);
+          if (state.option === 1) {
+            message.success("添加标签成功");
+          } else {
+            message.success("删除标签成功");
+          }
+
+          loadTable();
+        })
+        .catch((e) => {
+          console.log(e);
+          message.error("添加标签失败");
+        });
     };
     //确认时不重复输入
     const handleInputConfirm = ($event, record) => {
@@ -711,7 +721,7 @@ export default defineComponent({
       let obj = {
         key: state.tags.length + 1,
         name: inputValue,
-        isClick: false,
+        isClick: true,
         isSystemTag: false,
       };
       let tags = state.tags;
@@ -740,63 +750,60 @@ export default defineComponent({
         label_id: obj.key,
         label_name: obj.name,
         op: state.option,
-      }).then((res) => {
-        // console.log(listMenu);
-        console.log("刷新列表", res);
-        message.success('创建标签成功');
-        loadTable();
-      }).catch((e)=>{
-        console.log(e);
-        message.error('创建标签失败');
-      });
+      })
+        .then((res) => {
+          // console.log(listMenu);
+          console.log("刷新列表", res);
+          message.success("创建标签成功");
+          loadTable();
+        })
+        .catch((e) => {
+          console.log(e);
+          message.error("创建标签失败");
+        });
     };
 
     //清除标签
     const handleClose = (removedTag, record) => {
       console.log("removedTag", removedTag);
-      state.option = 3
-      // visible.value = true;     
+      state.option = 3;
+      // visible.value = true;
       Modal.confirm({
         title: "你要销毁这个标签吗?",
         icon: createVNode(ExclamationCircleOutlined),
         content: createVNode(
           "div",
-          { style: "color:red;" },
+          { style: "color:red;" }
           // "Some descriptions"
-          
         ),
-        okText: '确认',
-        cancelText: '取消',
+        okText: "确认",
+        cancelText: "取消",
         onOk() {
-         
           calldps(URL.common.option, {
             owener: "小明",
             id: record.id,
             label_id: removedTag.key,
             label_name: removedTag.name,
             op: state.option,
-          }).then((res) => {
-            message.success('销毁标签成功');
-            // console.log(listMenu);
-            console.log("刷新列表", res);
-            loadList(record)
-            loadTable();
-          }).catch((e)=>{
-            console.log(e);
-            message.error('销毁标签失败');
-          });
-         
-         
+          })
+            .then((res) => {
+              message.success("销毁标签成功");
+              // console.log(listMenu);
+              console.log("刷新列表", res);
+              loadList(record);
+              loadTable();
+            })
+            .catch((e) => {
+              console.log(e);
+              message.error("销毁标签失败");
+            });
         },
         onCancel() {
-
-         
-          return false
+          return false;
           console.log("Cancel");
         },
         class: "test",
       });
-     
     };
     const handleOk = (e) => {
       console.log(1, e);
@@ -804,66 +811,7 @@ export default defineComponent({
     };
 
     const handleOk1 = (e) => {
-      // console.log(3333, e);
-      // console.log(2, selectTag);
-      // let all = state.tags.concat(state.systemTags);
-      // console.log("all", all);
-
-      // console.log(223, data.value);
-
-      // data.value = data.value.map((item) => {
-      //   if (item._id === selectID) {
-      //     item.tags = all.map((item) => {
-      //       return {
-      //         key: item.name,
-      //         color: "orange",
-      //         isSystemTag: item.isSystemTag,
-      //         isClick: item.isClick,
-      //       };
-      //     });
-      //   }
-      //   return item;
-      // });
-      // selectTag = all.map((item) => {
-      //   return {
-      //     key: item.name,
-      //     color: "orange",
-      //     isSystemTag: item.isSystemTag,
-      //     isClick: item.isClick,
-      //   };
-      // });
-      // console.log("selectTag", selectTag);
-
-      // //合并系统标签和自定义标签
-      // state.totalTag = state.tags.concat(state.systemTags);
-      // console.log(55555, state.totalTag);
-
-      // //选择标签
-      // selectTag.tags = state.totalTag
-      //   .filter((v) => v.isClick)
-      //   .map((item) => {
-      //     return {
-      //       key: item.name,
-      //       //cyan:青绿色s
-      //       color: item.isClick ? "cyan" : "",
-      //     };
-      //   });
-      // console.log("selectTag.tags", selectTag.tags);
-
       visible1.value = false;
-      // data.value = data.value.map((item) => {
-      //   if (item._id === selectID) {
-      //     item.tags = all.map((item) => {
-      //       return {
-      //         key: item.name,
-      //         color: "orange",
-      //         isSystemTag: item.isSystemTag,
-      //         isClick: item.isClick,
-      //       };
-      //     });
-      //   }
-      //   return item;
-      // });
     };
 
     const changeView = () => {
@@ -926,17 +874,20 @@ export default defineComponent({
       },
     ];
 
+    const link = (item) => {
+      window.open(item.url);
+      console.log(item);
+    };
     let selectTag = {};
     let selectID = "";
 
     //获取标签
     const showModal1 = (record) => {
       console.log("record", record);
-      
-      loadList(record)
+
+      loadList(record);
       console.log(record);
 
-    
       visible1.value = true;
     };
     //应用
@@ -1021,6 +972,7 @@ export default defineComponent({
       beforeUpload, //在上传文件前获取文件名称
       handleChange, //文件上传成功后传递信息到后台、刷新列表
       deletfile,
+      link,
     };
   },
 });
@@ -1097,6 +1049,7 @@ export default defineComponent({
 .ant-checkbox-checked::after {
   border: none;
 }
+
 .tag-container {
   padding: 10px 10px;
   width: 200px;
@@ -1153,7 +1106,7 @@ export default defineComponent({
 }
 .filetags {
   display: inline-block;
-  width: 100px;
+  /* width: 100px; */
 }
 .filestate {
   display: inline-block;
@@ -1161,8 +1114,8 @@ export default defineComponent({
 }
 .line {
   display: inline-block;
-  font-size: 20px;
-  width: 100px;
+  font-size: 14px;
+  width: 100%;
   text-align: center;
 }
 .box {
@@ -1208,5 +1161,54 @@ export default defineComponent({
   height: 80px;
   width: 472px;
   /* border: 1px solid pink; */
+}
+::v-deep .ant-table-thead > tr > th {
+  /* padding-left: px;
+  font-size: px; */
+  background-color: #e6f7ff;
+  color: #3f98f3;
+  text-align: center;
+}
+.tags-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.tags-con {
+  height: 38px;
+  overflow: hidden;
+}
+.tag-button {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  background-color: #abe5ff;
+  /* display: flex; */
+  justify-content: center;
+  text-align: center;
+  border-radius: 10%;
+}
+.tag-button:hover {
+  width: 20px;
+  height: 20px;
+  background-color: skyblue;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  border-radius: 10%;
+}
+.tagtag {
+  display: flex;
+  flex-wrap: wrap;
+  width: 200px;
+  overflow: hidden;
+  align-items: center;
+}
+.tag-img {
+  position: absolute;
+  top: -5px;
+  left: -6px;
+  width: 30px;
+  height: 30px;
 }
 </style>
