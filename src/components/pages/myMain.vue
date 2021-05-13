@@ -506,13 +506,26 @@ export default defineComponent({
         owener: "小明",
       }).then((res) => {
         // console.log(listMenu);
+        console.log(123,res)
+        if(!res) {
+          data.value = []
+          return
+        }
         console.log("获取文件列表", res);
         console.log(data);
         // let newList = res[0];
         // let a=item.labels.split("|");
         data.value = res.map((item, index) => {
           let allTags = [];
-          allTags = item.labels.split("|").concat(item.user_labels.split("|"));
+          let temp = []
+          let temp1 = []
+          if(item.labels) {
+            temp = item.labels.split("|")
+          }
+          if(item.user_labels) {
+            temp1 = item.user_labels.split("|")
+          }
+          allTags = temp.concat(temp1);
           allTags = allTags.filter(v => {return v !== ""}).map((v) => {
             return {
               key: v,
