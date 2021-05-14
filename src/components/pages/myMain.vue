@@ -506,10 +506,10 @@ export default defineComponent({
         owener: "小明",
       }).then((res) => {
         // console.log(listMenu);
-        console.log(123,res)
-        if(!res) {
-          data.value = []
-          return
+        console.log(123, res);
+        if (!res) {
+          data.value = [];
+          return;
         }
         console.log("获取文件列表", res);
         console.log(data);
@@ -517,23 +517,27 @@ export default defineComponent({
         // let a=item.labels.split("|");
         data.value = res.map((item, index) => {
           let allTags = [];
-          let temp = []
-          let temp1 = []
-          if(item.labels) {
-            temp = item.labels.split("|")
+          let temp = [];
+          let temp1 = [];
+          if (item.labels) {
+            temp = item.labels.split("|");
           }
-          if(item.user_labels) {
-            temp1 = item.user_labels.split("|")
+          if (item.user_labels) {
+            temp1 = item.user_labels.split("|");
           }
           allTags = temp.concat(temp1);
-          allTags = allTags.filter(v => {return v !== ""}).map((v) => {
-            return {
-              key: v,
-              color: "blue",
-              isSystemTag: true,
-              isClick: false,
-            };
-          });
+          allTags = allTags
+            .filter((v) => {
+              return v !== "";
+            })
+            .map((v) => {
+              return {
+                key: v,
+                color: "blue",
+                isSystemTag: true,
+                isClick: false,
+              };
+            });
           return {
             id: item.id,
             key: index,
@@ -791,22 +795,6 @@ export default defineComponent({
       })
         .then((res) => {
           message.success("添加标签成功");
-          // calldps(URL.common.option, {
-          //   owener: "小明",
-          //   id: record.id,
-          //   label_id: obj.key,
-          //   label_name: obj.name,
-          //   op: 1,
-          // })
-          //   .then((res) => {
-          //     message.success("添加标签成功");
-          //     // message.success("添加标签成功");
-          //     loadTable();
-          //   })
-          //   .catch((e) => {
-          //     console.log(e);
-          //     message.error("添加标签失败");
-          //   });
 
           loadTable();
         })
@@ -820,9 +808,8 @@ export default defineComponent({
     const handleClose = (removedTag, record) => {
       console.log("removedTag", removedTag);
       state.option = 3;
-      // visible.value = true;
       Modal.confirm({
-        title: "你要销毁这个标签吗?",
+        title: "您要删除当前标签吗?",
         icon: createVNode(ExclamationCircleOutlined),
         content: createVNode(
           "div",
@@ -840,15 +827,42 @@ export default defineComponent({
             op: state.option,
           })
             .then((res) => {
-              message.success("销毁标签成功");
-              // console.log(listMenu);
+              message.success("删除标签成功");
               console.log("刷新列表", res);
-              loadList(record);
               loadTable();
+              console.log(12123681432, record);
+              calldps(URL.common.list, {
+                owener: "小明",
+              }).then((res) => {
+                // console.log(listMenu);
+                console.log("获取文件列表的自定义标签");
+                console.log(record.id);
+                let userTags = [];
+                userTags = res.filter((item) => {
+                  return item.id === record.id;
+                });
+                console.log(typeof userTags[0].user_labels);
+                if (userTags[0].user_labels) {
+                  userTags = userTags[0].user_labels.split("|");
+                  state.tags = userTags.map((item, index) => {
+                  return {
+                    key: index,
+                    name: item,
+                    isClick: true,
+                  };
+                });
+                }else{
+                  state.tags=[]
+                }
+                console.log('userTags',userTags);
+                 
+               
+                console.log('state.tags',state.tags);
+              });
             })
             .catch((e) => {
               console.log(e);
-              message.error("销毁标签失败");
+              message.error("删除标签失败");
             });
         },
         onCancel() {
@@ -950,7 +964,7 @@ export default defineComponent({
       }
       // let user_labels = record.user_labels ? record.user_labels.split("|") : [];
       console.log("user_labels", user_labels);
-
+      //自定义标签
       state.tags = user_labels.map((item, index) => {
         return {
           key: index,
@@ -958,10 +972,11 @@ export default defineComponent({
           isClick: true,
         };
       });
-
       console.log("state.tags", state.tags);
+
+      let labels = record.labels ? record.labels.split("|") : [];
       state.systemTags.map((item) => {
-        item.isClick = record.labels.split("|").includes(item.name);
+        item.isClick = labels.includes(item.name);
         return item;
       });
     };
