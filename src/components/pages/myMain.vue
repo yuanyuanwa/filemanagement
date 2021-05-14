@@ -827,7 +827,6 @@ export default defineComponent({
             op: state.option,
           })
             .then((res) => {
-              message.success("删除标签成功");
               console.log("刷新列表", res);
               loadTable();
               console.log(12123681432, record);
@@ -856,7 +855,7 @@ export default defineComponent({
                 }
                 console.log('userTags',userTags);
                  
-               
+                message.success("删除标签成功");
                 console.log('state.tags',state.tags);
               });
             })
