@@ -51,8 +51,17 @@ const routes = [
         path: 'recycle',
         component: ()=> import("../components/pages/recycle.vue"),
       },
+      {
+        path: 'arrange',
+        component: ()=> import("../components/pages/arrangeFile.vue"),
+      },
+      
     ]
        
+    },
+    {
+      path: '/arrange',
+      component: ()=> import("../components/pages/arrangeFile.vue"),
     },
   {
     path: "/about",
