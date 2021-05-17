@@ -844,19 +844,19 @@ export default defineComponent({
                 if (userTags[0].user_labels) {
                   userTags = userTags[0].user_labels.split("|");
                   state.tags = userTags.map((item, index) => {
-                  return {
-                    key: index,
-                    name: item,
-                    isClick: true,
-                  };
-                });
-                }else{
-                  state.tags=[]
+                    return {
+                      key: index,
+                      name: item,
+                      isClick: true,
+                    };
+                  });
+                } else {
+                  state.tags = [];
                 }
-                console.log('userTags',userTags);
-                 
+                console.log("userTags", userTags);
+
                 message.success("删除标签成功");
-                console.log('state.tags',state.tags);
+                console.log("state.tags", state.tags);
               });
             })
             .catch((e) => {
@@ -941,7 +941,7 @@ export default defineComponent({
     ];
 
     const link = (item) => {
-      window.open(item.url);
+      window.open(item.url); // https://baidu.com
       console.log(item);
     };
     let selectTag = {};
@@ -990,13 +990,18 @@ export default defineComponent({
         console.log(1111, state.applications);
         if (res) {
           state.applications = res.map((item) => {
-            item.url.includes("?")
-              ? (item.url = item.url + "&fid=")
-              : (item.url = item.url + "?fid=");
+            if (item.url) {
+              item.url.includes("?")
+                ? (item.url = item.url + "&fid=" + record.fid)
+                : (item.url = item.url + "?fid=" + record.fid);
+            }
+            if(item.name === '广东工程造价') {
+              item.url = '/#/arrange'
+            }
             return {
-              id: item.id,
-              name: item.name,
-              url: item.url + record.fid,
+              id: item.id || "",
+              name: item.name || "",
+              url: item.url || "",
             };
           });
           state.hasapp = true;

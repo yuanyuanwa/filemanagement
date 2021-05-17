@@ -1,41 +1,36 @@
 <template>
-  <div> 
-      <!-- <a-layout-header class="header"> </a-layout-header> -->
-      <a-layout-header class="header2">
-        <div class="left-con">
-          <div class="title">文件管理系统</div>
+  <div>
+    <!-- <a-layout-header class="header"> </a-layout-header> -->
+    <a-layout-header class="header2">
+      <div class="left-con">
+        <div class="title">文件管理系统</div>
 
-          <a-input
-            placeholder="搜索"
-            v-model:value="userName"
-            class="input"
-            
-          >
-            <template #prefix>
-              <search-outlined type="user" />
-            </template>
-          </a-input>
+        <a-input placeholder="搜索" v-model:value="userName" class="input">
+          <template #prefix>
+            <search-outlined type="user" />
+          </template>
+        </a-input>
+      </div>
+      <div class="right-con">
+        <div class="news">
+          <i class="icon iconfont icon-xiaoxi"></i>
+          <a href="#">
+            <a-badge count="5">
+              <span class="head-example" />
+            </a-badge>
+          </a>
         </div>
-        <div class="right-con">
-          <div class="news">
-            <i class="icon iconfont icon-xiaoxi"></i>
-            <a href="#">
-              <a-badge count="5">
-                <span class="head-example" />
-              </a-badge>
-            </a>
-          </div>
-          <div>
-            <img
-              :src="displayPicture"
-              alt="图片"
-              onerror=""
-              class="displayPicture"
-            />
-          </div>
-          <div>2333<DownOutlined /></div>
+        <div>
+          <img
+            :src="displayPicture"
+            alt="图片"
+            onerror=""
+            class="displayPicture"
+          />
         </div>
-      </a-layout-header>
+        <div>2333<DownOutlined /></div>
+      </div>
+    </a-layout-header>
   </div>
 </template>
 
@@ -57,7 +52,6 @@ export default defineComponent({
 </script>
 
 <style  scoped>
-
 .news {
   margin-right: 30px;
 }
@@ -100,7 +94,7 @@ export default defineComponent({
   border-radius: 50%;
   margin-right: 10px;
 }
-/deep/ .ant-layout-header{
+/deep/ .ant-layout-header {
   z-index: 100;
 }
 </style>
