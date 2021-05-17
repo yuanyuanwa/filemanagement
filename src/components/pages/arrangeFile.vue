@@ -100,7 +100,7 @@
                     >
                   </a-radio-group>
                 </div>
-                <div @click="handleclose">更多<DownOutlined /></div>
+                <div @click="handleclose" style=" cursor: pointer;">更多<DownOutlined /></div>
               </div>
               <div style="display: flex" v-else>
                 <div class="category-con2">
@@ -114,7 +114,7 @@
                     >
                   </a-radio-group>
                 </div>
-                <div @click="handleclose">收起<UpOutlined /></div>
+                <div @click="handleclose"  style=" cursor: pointer;">收起<UpOutlined /></div>
               </div>
             </a-form-item>
             <a-form-item label="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;省份">
@@ -133,7 +133,7 @@
                     >
                   </a-radio-group>
                 </div>
-                <div @click="handleclose">更多<DownOutlined /></div>
+                <div @click="handleclose" style=" cursor: pointer;">更多<DownOutlined /></div>
               </div>
               <div style="display: flex" v-else>
                 <div class="category-con2">
@@ -147,7 +147,7 @@
                     >
                   </a-radio-group>
                 </div>
-                <div @click="handleclose">收起<UpOutlined /></div>
+                <div @click="handleclose" style=" cursor: pointer;">收起<UpOutlined /></div>
               </div>
             </a-form-item>
             <a-form-item label="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;城市">
@@ -166,7 +166,7 @@
                     >
                   </a-radio-group>
                 </div>
-                <div @click="handleclose">更多<DownOutlined /></div>
+                <div @click="handleclose" style=" cursor: pointer;" >更多<DownOutlined /></div>
               </div>
               <div style="display: flex" v-else>
                 <div class="category-con2">
@@ -180,7 +180,7 @@
                     >
                   </a-radio-group>
                 </div>
-                <div @click="handleclose">收起<UpOutlined /></div>
+                <div @click="handleclose" style=" cursor: pointer;">收起<UpOutlined /></div>
               </div>
             </a-form-item>
             <a-form-item label="数据脱敏">
@@ -330,7 +330,7 @@
                           "
                         />
                       </div>
-                      <div style="color:#dce4ea">换一批</div>
+                      <div style="color:#dce4ea;cursor: pointer;"> <i class="icon iconfont icon-huanyihuan" style=" cursor: pointer;"></i>换一批</div>
                     </div>
                     </div>
                      
