@@ -1,5 +1,6 @@
 <template>
   <div class="page-con">
+    {{listMenu&&listMenu.length>0&&listMenu[0]}}
     <div class="head">
       <div class="list">
         <div>
@@ -13,10 +14,9 @@
               @ok="handleOk"
               ok-text="确认"
               cancel-text="取消"
-            ><div>
-              {{listMenu[0]}}
-            </div>
-             
+              ><div>
+                {{ listMenu[0] }}
+              </div>
             </a-modal>
             <a-radio-button value="large">收藏</a-radio-button>
             <a-radio-button value="large">下载</a-radio-button>
@@ -46,7 +46,7 @@
             selectedRowKeys: selectedRowKeys,
             onChange: onSelectChange,
           }"
-          :data-source="data"
+          :data-source="listMenu"
           :columns="columns"
         >
           <template #name="scope">
@@ -57,11 +57,7 @@
                   <span>{{ scope.text }}</span>
                 </router-link>
                 <span v-for="tag in scope.record.tags" :key="tag">
-                  <a-tag
-                    v-if="tag.isClick"
-                    :key="tag"
-                    :color="tag.color"
-                  >
+                  <a-tag v-if="tag.isClick" :key="tag" :color="tag.color">
                     {{ tag.key }}
                   </a-tag>
                 </span>
@@ -254,7 +250,7 @@
                       <div class="app">
                         <div>
                           <div
-                            v-for="(item, i) in applications"
+                            v-for="(item, i) in listMenu"
                             :key="i"
                             class="applications"
                           >
@@ -327,6 +323,8 @@ import {
   reactive,
   toRefs,
   nextTick,
+  onMounted,
+  watch
 } from "vue";
 // import { ColumnProps } from 'ant-design-vue/es/table/interface';
 
@@ -335,20 +333,28 @@ export default defineComponent({
     FileOutlined,
     PlusOutlined,
   },
-  props:{
-    listMenu: { // 菜单数据
-      type: Object,
-            required: true,
-            default(){
-                return []
-            }
-        }
+  props: {
+    listMenu: {
+      // 菜单数据
+      // type: Object,
+      required: true,
+      default() {
+        return [];
+      },
+    },
   },
+  
   setup(props) {
-    console.log(111);
-    console.log(1010010101010,props);
-    console.log(10,props.listMenu);
-    console.log(3333333333333,props.listMenu[0]);
+    watch(props.listMenu, (newValue, oldValue) => { //直接监听
+	console.log("count改变了");
+});
+    // onMounted(() => {
+    //   console.log(10, listMenu);
+    // });
+    // setTimeout(() => {
+    //   console.log(31, props.listMenu);
+
+    // },1)
     //定义变量
     const state = reactive({
       selectedRowKeys: [], // Check here to configure the default column
@@ -649,9 +655,9 @@ export default defineComponent({
       //   imageurl: require("../../assets/document.png"),
       // },
     ]);
-   
-// const data=listMenu.map(it)
-console.log("data",data);
+
+    // const data=listMenu.map(it)
+    console.log("data", data);
     const showModal = () => {
       visible.value = true;
     };
@@ -835,7 +841,6 @@ console.log("data",data);
       changeView,
       del,
       // listMenu,
-     
     };
   },
 });

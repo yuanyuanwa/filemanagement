@@ -53,48 +53,99 @@
 import list from "../component/list";
 import moment from "moment";
 // import url from "../../serviceAPI.config";
-import { defineComponent, reactive, ref, toRefs,watch} from "vue";
+import { defineComponent, reactive, ref, toRefs, watch } from "vue";
 import calldps from "../../api/calldps";
 export default defineComponent({
   components: {
     listcon: list,
   },
-  setup() { 
+  setup() {
     console.log(123);
     const state = reactive({
       uploadurl: "",
       size: "", //上传文件大小
     });
-    
-    let listMenu=[]
+
+    let listMenu = ref([]);
 
     calldps("file_manager/get_myfile", {
       // file_manager/get_myfile
-        owener: '小明',
-      }).then((res) => {
-            console.log("刷新列表", res);
-            listMenu=[
-      {
-        name : '总部',
-        isActive : true
-      },
-      {
-        name : '地球',
-        isActive : false
-      },
-      {
-        name : '火星',
-        isActive : false
-      }     
-    ]
-            console.log(66666666666666,listMenu);
-          });
+      owener: "小明",
+    }).then((res) => {
+      console.log("刷新列表", res);
+      console.log(123, res);
+      let data
+        if (!res) {
+          data = [];
+          return;
+        }
+        console.log("获取文件列表", res);
+        console.log(data);
+        // let newList = res[0];
+        // let a=item.labels.split("|");
+        data = res.map((item, index) => {
+          let allTags = [];
+          let temp = [];
+          let temp1 = [];
+          if (item.labels) {
+            temp = item.labels.split("|");
+          }
+          if (item.user_labels) {
+            temp1 = item.user_labels.split("|");
+          }
+          allTags = temp.concat(temp1);
+          allTags = allTags
+            .filter((v) => {
+              return v !== "";
+            })
+            .map((v) => {
+              return {
+                key: v,
+                color: "blue",
+                isSystemTag: true,
+                isClick: false,
+              };
+            });
+          return {
+            id: item.id,
+            key: index,
+            fid: item.fid,
+            name: item.fname,
+            age: 32,
+            size: item.size,
+            isFiled: "已归档",
+            seeTime: item.modify_time,
+            _id: index,
+            user_labels: item.user_labels,
+            labels: item.labels,
+            //   tags:[
+            //     {
+            //        key: item.labels,
+            //        color: "orange",
+            //        isSystemTag: true,
+            //        isClick: false,
+            //     },
+            // ],
+            tags: allTags,
+
+            action: "...",
+            icon: false,
+            width: 400,
+            imageurl: require("../../assets/document.png"),
+          };
+        });
+        console.log(7, data);
+    
+      listMenu.value = data
+      // listMenu.value=res
+      console.log(166666666666666, listMenu);
+    });
     calldps("p111", {
       // file_manager/get_myfile
-        // owener: '小明',
-      }).then((res) => {
-          console.log(677777777,listMenu);
-          });
+      // owener: '小明',
+    }).then((res) => {
+      console.log(677777777, listMenu);
+    });
 
     //在上传文件前获取文件名称
     const beforeUpload = (file, FileItem) => {
@@ -111,13 +162,13 @@ export default defineComponent({
     //文件上传成功后刷新列表
 
     const handleChange = (info) => {
-      console.log(555555555555,listMenu);
+      console.log(555555555555, listMenu);
       if (info.file.status !== "uploading") {
         // console.log(info.file, info.fileList);
       }
       if (info.file.status === "done") {
         let truesize = state.size / 1000 + "KB";
-        console.log(1111111111,info.file.response);
+        console.log(1111111111, info.file.response);
         //在文件上传成功后传递信息到后台
         calldps("file_manager/file_upload", {
           // attach_id: info.file.response.attach_id,
@@ -125,19 +176,19 @@ export default defineComponent({
           fname: info.file.response.filename,
           fid: info.file.response.md5,
           size: truesize,
-          owener:'小明'
+          owener: "小明",
         }).then((res) => {
           console.log(res);
           // message.success(`${info.file.name} file uploaded successfully`);
 
           //传递信息成功后刷新列表
           calldps("file_manager/get_myfile", {
-        owener: '小明',
-      }).then((res) => {
-        console.log(listMenu);
+            owener: "小明",
+          }).then((res) => {
+            console.log(listMenu);
             console.log("刷新列表", res);
-            listMenu=res
-            console.log(66666666666666,state.dd);
+            listMenu = res;
+            console.log(66666666666666, state.dd);
           });
         });
       } else if (info.file.status === "error") {
@@ -148,7 +199,7 @@ export default defineComponent({
       ...toRefs(state),
       beforeUpload, //在上传文件前获取文件名称
       handleChange, //文件上传成功后传递信息到后台、刷新列表
-      listMenu
+      listMenu,
     };
   },
 });

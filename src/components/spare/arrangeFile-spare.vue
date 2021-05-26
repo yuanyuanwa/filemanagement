@@ -32,9 +32,19 @@
           <a-form :model="State">
             <div class="input-con">
               <div class="form-item">
+                <span>项目基础</span>
+                <div>
+                  <a-input
+                    v-model:value="State.name"
+                    placeholder="请输入项目名称"
+                    class="item-input"
+                  />
+                </div>
+              </div>
+              <div class="form-item">
                 <div>计量基础</div>
                 <div>
-                  <a-input v-model:value="State.region" class="item-input" />
+                  <a-input v-model:value="State.region" class="inputsize" />
                 </div>
               </div>
               <div class="form-item">
@@ -43,12 +53,37 @@
                   <a-input
                     v-model:value="State.date1"
                     placeholder="m2"
-                    class="item-input"
+                    class="inputsize"
                   />
                 </div>
               </div>
             </div>
-           
+            <a-form-item label="项目年份">
+              <div>
+                <a-radio-group v-model:value="value1" button-style="solid">
+                  <a-radio-button
+                    class="single"
+                    v-for="(item, i) in State.year"
+                    :key="i"
+                    :value="item.value"
+                    >{{ item.name }}</a-radio-button
+                  >
+                </a-radio-group>
+              </div>
+            </a-form-item>
+            <a-form-item label="项目月份">
+              <div>
+                <a-radio-group v-model:value="value2" button-style="solid">
+                  <a-radio-button
+                    :value="item.value"
+                    class="single1"
+                    v-for="(item, i) in State.month"
+                    :key="i"
+                    >{{ item.name }}</a-radio-button
+                  >
+                </a-radio-group>
+              </div>
+            </a-form-item>
             <a-form-item label="专业类别">
               <div
                 style="display: flex; align-items: center"
@@ -86,28 +121,231 @@
                 </div>
               </div>
             </a-form-item>
-
-            <a-form-item :wrapper-col="{ span: 14, offset: 4 }" v-if="true">
-              <a-button type="primary" @click="onSubmit">开始整理</a-button>
+            <a-form-item label="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;省份">
+              <div
+                style="display: flex; align-items: center"
+                v-if="State.provincehidden"
+              >
+                <div class="category-con">
+                  <a-radio-group v-model:value="value4" button-style="solid">
+                    <a-radio-button
+                      :value="item.value"
+                      class="single2"
+                      v-for="(item, i) in State.province"
+                      :key="i"
+                      >{{ item.name }}</a-radio-button
+                    >
+                  </a-radio-group>
+                </div>
+                <div @click="handleclose2" style="cursor: pointer">
+                  更多<i class="icon iconfont icon-arrow_down"></i>
+                </div>
+              </div>
+              <div style="display: flex" v-else>
+                <div class="category-con2">
+                  <a-radio-group v-model:value="value4" button-style="solid">
+                    <a-radio-button
+                      :value="item.value"
+                      class="single2"
+                      v-for="(item, i) in State.city"
+                      :key="i"
+                      >{{ item.name }}</a-radio-button
+                    >
+                  </a-radio-group>
+                </div>
+                <div @click="handleclose2" style="cursor: pointer">
+                  收起<i class="icon iconfont icon-down"></i>
+                </div>
+              </div>
             </a-form-item>
-            <a-form-item :wrapper-col="{ span: 14, offset: 4 }" v-else>
-              <a-button type="primary" @click="onSubmit">重新整理</a-button>
+            <a-form-item label="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;城市">
+              <div
+                style="display: flex; align-items: center"
+                v-if="State.cityhidden"
+              >
+                <div class="category-con">
+                  <a-radio-group v-model:value="value5" button-style="solid">
+                    <a-radio-button
+                      :value="item.value"
+                      class="single2"
+                      v-for="(item, i) in State.city"
+                      :key="i"
+                      >{{ item.name }}</a-radio-button
+                    >
+                  </a-radio-group>
+                </div>
+                <div @click="handleclose3" style="cursor: pointer">
+                  更多<i class="icon iconfont icon-arrow_down"></i>
+                </div>
+              </div>
+              <div style="display: flex" v-else>
+                <div class="category-con3">
+                  <a-radio-group v-model:value="value5" button-style="solid">
+                    <a-radio-button
+                      :value="item.value"
+                      class="single2"
+                      v-for="(item, i) in State.city"
+                      :key="i"
+                      >{{ item.name }}</a-radio-button
+                    >
+                  </a-radio-group>
+                </div>
+                <div @click="handleclose3" style="cursor: pointer">
+                  收起<i class="icon iconfont icon-down"></i>
+                </div>
+              </div>
+            </a-form-item>
+            <a-form-item label="数据脱敏">
+              <div style="display: flex">
+                <div class="box lineleft">
+                  <div>序号</div>
+                  <div>新增</div>
+                </div>
+                <div class="box">
+                  <div>原始数据</div>
+                  <div>
+                    <a-input
+                      v-model:value="State.desc"
+                      type="textarea"
+                      placeholder="请输入原始数据"
+                    />
+                  </div>
+                </div>
+                <div class="box">
+                  <div>&nbsp;</div>
+                  <div><i class="icon iconfont icon-up"></i></div>
+                </div>
+                <div class="box">
+                  <div>目标数据</div>
+                  <div>
+                    <a-input
+                      v-model:value="State.desc"
+                      type="textarea"
+                      placeholder="请输入目标数据"
+                    />
+                  </div>
+                </div>
+                <div class="box lineright">
+                  <div>新增</div>
+                  <div>
+                    <a-button type="primary" @click="onSubmit">保存</a-button>
+                  </div>
+                </div>
+              </div>
+            </a-form-item>
+            <a-form-item label="上传文件">
+              <div style="display: flex">
+                <!-- <div >
+                  <a-upload
+                    v-model:file-list="fileList"
+                    name="file"
+                    :multiple="true"
+                    action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                    :headers="headers"
+                    @change="handleChange"
+                  >
+                    <div class="up-box1">
+                      <div>
+                        <img
+                          src="../../assets/doc.png"
+                          alt="图片"
+                          style="
+                            width: 45px;
+                            height: 45px;
+                            text-align: center;
+                            margin-bottom:10px
+                          "
+                        />
+                      </div>
+                      <div class="uptitle">上传项目</div>
+                      <div style="color:#dce4ea">格式：zip，rar，mzj</div>
+                      <div style="color:#dce4ea">大小：小于10M</div>
+                    </div>
+                  </a-upload>
+                </div> -->
+                <div>
+                  <a-upload
+                   accept=".png,.jpeg,.jpg"
+                    v-model:file-list="fileList"
+                    name="file"
+                    :multiple="true"
+                    action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                    :headers="headers"
+                    @change="handleChange"
+                  >
+                    <div class="up-box1">
+                      <div>
+                        <img
+                          src="../../assets/pic.png"
+                          alt="图片"
+                          style="
+                            width: 45px;
+                            height: 45px;
+                            text-align: center;
+                            margin-bottom: 10px;
+                          "
+                        />
+                      </div>
+                      <div class="uptitle">上传封面</div>
+                      <div style="color: #cfcfcf">格式：jpg，png，gif</div>
+                      <div style="color: #cfcfcf">最佳尺寸：800*600px</div>
+                    </div>
+                  </a-upload>
+                </div>
+                <div>
+                  <div class="up-box2">
+                    <div>
+                      <div class="img-box">
+                        <img
+                          src="../../assets/pic.png"
+                          alt="图片"
+                          style="width: 45px; height: 45px"
+                        />
+                        <img
+                          src="../../assets/pic.png"
+                          alt="图片"
+                          style="width: 45px; height: 45px"
+                        />
+                        <img
+                          src="../../assets/pic.png"
+                          alt="图片"
+                          style="width: 45px; height: 45px"
+                        />
+                        <img
+                          src="../../assets/pic.png"
+                          alt="图片"
+                          style="width: 45px; height: 45px"
+                        />
+                        <img
+                          src="../../assets/pic.png"
+                          alt="图片"
+                          style="width: 45px; height: 45px"
+                        />
+                        <img
+                          src="../../assets/pic.png"
+                          alt="图片"
+                          style="width: 45px; height: 45px; margin-bottom: 10px"
+                        />
+                      </div>
+                      <div style="color: #cfcfcf; cursor: pointer">
+                        换一批
+                        <i
+                          class="icon iconfont icon-huanyihuan"
+                          style="cursor: pointer"
+                        ></i
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </a-form-item>
 
-            <a-form-item :wrapper-col="{ span: 24, offset: 0 }" v-if="true">
-              <a-button style="margin-left: 10px" v-for="(item,i) in State.year" :key="i" disabled>{{item.name}}</a-button>
-              <a-button style="margin-left: 10px" disabled>造价树</a-button>
-              <a-button style="margin-left: 10px" disabled>清单数据</a-button>
-              <a-button style="margin-left: 10px" disabled>造价树</a-button>
-              <a-button style="margin-left: 10px" disabled>清单数据</a-button>
-              <a-button style="margin-left: 10px" disabled>造价树</a-button>
-              <a-button style="margin-left: 10px" disabled>清单数据</a-button>
-              <a-button style="margin-left: 10px" disabled>造价树</a-button>
-              <a-button style="margin-left: 10px" disabled>清单数据</a-button>
+            <a-form-item :wrapper-col="{ span: 14, offset: 4 }">
+              <a-button type="primary" @click="onSubmit">整理</a-button>
             </a-form-item>
-
-            <a-form-item :wrapper-col="{ span: 24, offset: 0 }" v-else>
-              <a-button style="margin-left: 10px" v-for="(item,i) in State.year" :key="i">{{item.name}}</a-button>
+            <a-form-item :wrapper-col="{ span: 24, offset: 0 }">
+              <a-button style="margin-left: 10px">造价树</a-button>
               <a-button style="margin-left: 10px">清单数据</a-button>
               <a-button style="margin-left: 10px">造价树</a-button>
               <a-button style="margin-left: 10px">清单数据</a-button>
@@ -149,7 +387,9 @@ export default defineComponent({
       type: [],
       resource: "",
       desc: "",
-      categoryhidden: false,
+      categoryhidden: true,
+      provincehidden: true,
+      cityhidden: true,
       year: [
         {
           value: 2021,
@@ -200,6 +440,7 @@ export default defineComponent({
           name: 2010,
         },
       ],
+
       month: [
         {
           value: 1,
@@ -397,19 +638,36 @@ export default defineComponent({
         { value: 30, name: "内蒙古" },
       ],
     });
-
+    const value1 = ref(2021);
+    const value2 = ref(5);
     const value3 = ref(4);
-
+    const value4 = ref(6);
+    const value5 = ref(7);
     const handleclose = () => {
       State.categoryhidden = !State.categoryhidden;
       console.log(State.categoryhidden);
       console.log(111);
     };
-
+    const handleclose2 = () => {
+      State.provincehidden = !State.provincehidden;
+    };
+    const handleclose3 = () => {
+      State.cityhidden = !State.cityhidden;
+    };
     const onSubmit = () => {
       console.log("submit!", toRaw(State));
     };
-
+    // const beforeUpload=(file) => {
+    //   const isJpgOrPng = file.type === 'image/jpeg/jpg/png' || file.type === 'image/png/jpg/png';
+    //   // if (!isJpgOrPng) {
+    //   //   message.error('你只能上传图片!');
+    //   // }
+    //   const isLt2M = file.size / 1024 / 1024 < 2;
+    //   if (!isLt2M) {
+    //     message.error('Image must smaller than 2MB!');
+    //   }
+    //   return isJpgOrPng && isLt2M;
+    // };
     //上传处理的每个阶段
     const handleChange = (info) => {
       if (info.file.status !== "uploading") {
@@ -423,6 +681,7 @@ export default defineComponent({
       }
     };
 
+
     const fileList = ref([]);
     return {
       labelCol: {
@@ -435,13 +694,19 @@ export default defineComponent({
       onSubmit,
       userName: ref(""),
       displayPicture: require("../../assets/cat.jpg"),
+      value1,
+      value2,
       value3,
+      value4,
+      value5,
       handleclose,
       fileList,
       headers: {
         authorization: "authorization-text",
       },
       handleChange,
+      handleclose2,
+      handleclose3,
     };
   },
 });
@@ -463,6 +728,14 @@ export default defineComponent({
   align-items: center;
   justify-content: space-between;
 }
+.title {
+  font-family: "微软雅黑 Bold", "微软雅黑 Regular", "微软雅黑";
+  font-weight: 700;
+  font-style: normal;
+  font-size: 24px;
+  color: #464c5b;
+}
+
 .left-con {
   display: flex;
   align-items: center;
@@ -483,14 +756,14 @@ export default defineComponent({
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 90vh;
+  /* height: 89vh; */
 }
 .form {
   margin-top: 20px;
   width: 900px;
   background-color: white;
   box-shadow: 0 3px 5px rgba(0, 0, 0, 0.05);
-  padding: 25px;
+  padding: 20px;
   font-size: 14px;
 }
 .input-con {
@@ -504,9 +777,14 @@ export default defineComponent({
   justify-content: space-around;
   align-items: center;
 }
-
+.inputsize {
+  width: 150px;
+  margin-left: 11px;
+  border-radius: 5px;
+  background-color: #f6f9fa;
+}
 .item-input {
-  width: 330px;
+  width: 300px;
   margin-left: 11px;
   border-radius: 5px;
   background-color: #f6f9fa;
@@ -547,6 +825,10 @@ export default defineComponent({
 
   position: static;
 }
+/* /deep/ .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled)::before {
+    background-color: #1890ff;
+} */
+
 /* 改变单选按钮的样式 */
 /deep/ .ant-radio-button-wrapper {
   height: 24px;
@@ -566,6 +848,14 @@ export default defineComponent({
 .category-con2 {
   width: 728px;
   overflow: hidden;
+  border-bottom: 1px solid #eff2f4;
+  /* background-color: pink; */
+  margin-top: 7px;
+  text-align: left;
+}
+.category-con3 {
+  width: 728px;
+  overflow: hidden;
   /* border-bottom: 1px solid #eff2f4; */
   /* background-color: pink; */
   margin-top: 7px;
@@ -575,5 +865,40 @@ export default defineComponent({
   padding: 5px 27px 5px 15px;
   border-top: 1px solid #f0f0f0;
   border-bottom: 1px solid #f0f0f0;
+}
+.lineleft div {
+  border-left: 1px solid #f0f0f0;
+}
+.lineright div {
+  border-right: 1px solid #f0f0f0;
+}
+.uptitle {
+  font-size: 20px;
+  padding-bottom: 26px;
+  color: #999999;
+}
+.up-box1 {
+  width: 342px;
+  height: 200px;
+  background-color: #f6f9fa;
+  border: 2px dashed #dce4ea;
+  padding: 17px;
+  cursor: pointer;
+  margin-right: 40px;
+}
+.up-box2 {
+  width: 342px;
+  height: 200px;;
+  padding: 17px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.img-box {
+  display: flex;
+  width: 135px;
+  height: 90px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
 }
 </style>
